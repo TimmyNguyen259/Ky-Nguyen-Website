@@ -46,7 +46,7 @@ Rules quan trọng:
 |---|---|
 | Tech stack | **Astro** + Tailwind CSS v4 + Sitemap. Vercel free tier để deploy. MDX đã gỡ (chưa có `.mdx` file nào). |
 | Ngôn ngữ site | English |
-| Palette | **Brandbook FINAL — LOCKED** — Cream `#F5EBDD`, Peach `#FBD9C4`, Lilac `#E7D6EE`, Soft Blue `#D6E1EC`, Amber `#E8A15A`, Grey `#6B7280`, White `#FFFFFF`. Text ink `#0F1013`. |
+| Palette | **Brandbook FINAL — LOCKED** — giá trị thật nằm ở `src/styles/global.css`: Cream `#FAF6F0`, Peach `#F4C7A4`, Lilac `#DACDEB`, Soft Blue `#C9DCED`, Amber `#DE7C4B`, Grey `#6E6E73`, White `#FFFFFF`, ink `#1D1D1F`, blue (chữ) `#5693BB`. |
 | Fonts | **One clear sans voice**: Noto Sans (weights 400/500/700/900). Bỏ hoàn toàn Noto Serif. |
 | Tagline (hero) | **"Bring out the best in people."** |
 | Statement | Ky Nguyen works with one dedication... In the game industry, he leads the transformation of people systems — connecting sharper judgment to business results, with AI tools he builds himself. |
@@ -162,7 +162,8 @@ portfolio/
 
 - Ảnh: chưa có ảnh Kỳ nào. Brandbook FINAL §The Portrait: "An illustrated character, built from my real face" — cần Kỳ cung cấp portrait illustration.
 - URLs trong `src/config/site.ts` trống: `email`, `cvPath`, `github`, `solaceUrl`, `voiceLabUrl`.
-- Cases: 2 case draft (SEA markets, overseas pipeline) chờ Kỳ approve full narrative.
+- Cases: 2 case draft (`first-talents-five-markets`, `overseas-pipeline`) đã viết khung trong `src/content/cases.ts`, trang `/cases/[slug]` chỉ hiện ở dev. Còn các câu hỏi `[TODO_CONTENT: …]` chờ Kỳ trả lời.
+- Thị trường (Kỳ xác nhận 05/10): **Thailand, Indonesia, China, Taiwan, Malaysia** — 5 thị trường, không phải "4 SEA markets" / Philippines.
 - Thinking: `process-is-not-a-system` status:draft chờ Kỳ viết content.
 - Builds: 3 builds có structure nhưng URL Solace/Voice-Lab/GitHub trống — link ẩn tự động.
 - Vercel URL: đã đổi sang `https://ky-nguyen-website.vercel.app` (05/10).

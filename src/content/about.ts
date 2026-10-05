@@ -91,16 +91,16 @@ export const experience = {
   label: 'Experience',
   heading: 'Experience, briefly told.',
   paragraphs: [
-    'Thirteen-plus years in talent acquisition and HR. Most of the last stretch has been at VNGGames — supporting the first talent hires as teams established across Thailand, Indonesia, Malaysia and the Philippines. Rare and difficult roles, and an overseas talent pipeline built over the course of a year.',
+    'Thirteen-plus years in talent acquisition and HR. Most of the last stretch has been at VNGGames — supporting the first talent hires as teams established across Thailand, Indonesia, China, Taiwan and Malaysia. Rare and difficult roles, and an overseas talent pipeline built over the course of a year.',
     'In practice: 300–400 hires per year at steady pace, 30–45-day time to fill for senior roles, offer acceptance above 95%, and a team of 6–8 doing the work with me.',
     'Today most of my energy sits inside an SSC · HRBP · COE operating model — the quieter design work of deciding where a decision belongs, what a handoff looks like, and which system a repeat problem should live in.',
   ],
   facts: [
     { label: '13+ years', context: 'Talent acquisition and HR.' },
     {
-      label: '4 SEA markets',
+      label: '5 markets',
       context:
-        'First VNGGames talents in Thailand, Indonesia, Malaysia, Philippines.',
+        'First VNGGames talents in Thailand, Indonesia, China, Taiwan, Malaysia.',
     },
     { label: '300–400 hires/year', context: 'Sustained annual hiring volume.' },
     { label: '30–45 days', context: 'Time to fill senior roles.' },

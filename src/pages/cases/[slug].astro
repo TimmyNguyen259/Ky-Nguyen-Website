@@ -3,18 +3,40 @@ import Base from '../../layouts/Base.astro';
 import Rule from '../../components/Rule.astro';
 import ArticleHeader from '../../components/writing/ArticleHeader.astro';
 import ArticleNav from '../../components/writing/ArticleNav.astro';
-import { getCase, nextgen } from '../../content/cases';
+import { caseIndex, caseStories, getCase, type CaseStory } from '../../content/cases';
 import { tieDashes } from '../../utils/typography';
 
-const entry = getCase(nextgen.slug);
-if (!entry) throw new Error(`Case "${nextgen.slug}" is missing from caseIndex`);
+// One page per story. Drafts get a page in dev only (the index shows them
+// muted there), so a draft can never ship.
+export function getStaticPaths() {
+  return caseStories
+    .filter((story) => {
+      const entry = getCase(story.slug);
+      if (!entry) throw new Error(`Case "${story.slug}" is missing from caseIndex`);
+      return !import.meta.env.PROD || entry.status === 'published';
+    })
+    .map((story) => ({ params: { slug: story.slug }, props: { story } }));
+}
+
+type Props = { story: CaseStory };
+
+const { story } = Astro.props;
+const entry = getCase(story.slug)!;
 const meta = [entry.category, entry.readingTime];
+
+// The next published case with a story, as the post pages do.
+const published = caseIndex.filter(
+  (item) => item.status === 'published' && caseStories.some((s) => s.slug === item.slug),
+);
+const index = published.findIndex((item) => item.slug === story.slug);
+const nextCase =
+  index !== -1 && published.length > 1 ? published[(index + 1) % published.length] : undefined;
 
 // The book's triad voice carried through the narrative: Context takes the
 // palette's quiet grey, then Belief · Decision · Outcome run amber · ink · blue.
 const tones = ['quiet', 'amber', 'ink', 'blue'] as const;
 
-const sections = nextgen.sections.map((section, index) => {
+const sections = story.sections.map((section, index) => {
   const name = section.label.charAt(0) + section.label.slice(1).toLowerCase();
   return {
     name,
@@ -25,17 +47,13 @@ const sections = nextgen.sections.map((section, index) => {
 });
 ---
 
-<Base
-  type="article"
-  title="VNGGames Nextgen · A separate name was not a branding preference"
-  description="How VNGGames Nextgen chose a game-native identity over the safer parent-company brand."
->
+<Base type="article" title={story.pageTitle} description={story.description}>
   <div class="shell case">
     <article class="case__article" aria-labelledby="article-title">
-      <ArticleHeader meta={meta} title={nextgen.title} id="article-title" />
+      <ArticleHeader meta={meta} title={story.title} id="article-title" />
 
       <div class="case__grid">
-        <p class="lead quiet case__subtitle">{tieDashes(nextgen.subtitle)}</p>
+        <p class="lead quiet case__subtitle">{tieDashes(story.subtitle)}</p>
 
         {sections.map((section) => (
           <section class="case__row" aria-labelledby={section.id}>
@@ -52,13 +70,18 @@ const sections = nextgen.sections.map((section, index) => {
       </div>
 
       <div class="case__close">
-        <p class="statement case__close-line">{nextgen.close}</p>
+        <p class="statement case__close-line">{tieDashes(story.close)}</p>
         <Rule tone="amber" class="case__close-rule" />
       </div>
     </article>
 
     <div class="case__nav">
-      <ArticleNav label="More cases" back={{ href: '/cases', label: 'All cases' }} rule={false} />
+      <ArticleNav
+        label="More cases"
+        back={{ href: '/cases', label: 'All cases' }}
+        next={nextCase && { href: `/cases/${nextCase.slug}`, title: nextCase.title }}
+        rule={false}
+      />
     </div>
   </div>
 </Base>

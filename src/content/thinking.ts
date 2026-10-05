@@ -58,9 +58,9 @@ export const posts = [
       'A process is not a system until people know where a decision belongs.',
     tension:
       'A flowchart tells you what happens. It rarely tells you who owns the call when the flowchart is wrong.',
-    readingTime: '4 min',
-    date: '2026-09-14',
-    status: 'draft' as const,
+    readingTime: '2 min',
+    date: '2026-10-05',
+    status: 'published' as const,
   },
 ] as const;
 

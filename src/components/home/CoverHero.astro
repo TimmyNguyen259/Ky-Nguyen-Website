@@ -1,0 +1,173 @@
+---
+// Brandbook FINAL · Cover — "Bring out the best in people." and the man.
+// "He sits inside the scene, sharing one continuous background with the
+// page": the portrait's own pastel scene is dissolved into the fixed mesh
+// surface with soft alpha masks (cover-mask-*, drawn in the portrait's
+// pixel space: his figure, and the scene around him), so no image edge is
+// ever visible.
+//
+// Wide screens (desktop, landscape tablets/phones): the scene fills the
+// cover height, anchored right, so the whole figure — head to feet — is
+// always in frame; the line sits at the book's position, left, about a
+// quarter of the way down.
+// Narrow/portrait screens: the line first, then the figure as a cropped
+// portrait centred on him.
+//
+// The masks (kept comment-free — they are inlined into the home CSS twice):
+// - cover-mask-figure.svg — layer 1: his silhouette plus ~30px, lightly
+//   feathered; fully opaque over the figure, clear of every frame edge.
+// - cover-mask-scene-wide.svg — layer 2, wide screens: the scene around
+//   him, reaching the top and right edges and thinning softly to the left
+//   and toward the floor; an oval around the legs keeps the ground near him
+//   a little longer, so no image edge or seam is ever seen.
+// - cover-mask-scene-stacked.svg — layer 2, narrow screens: only the soft
+//   floor shadow under his shoes. The portrait's backdrop is warmer than
+//   the mesh here, so none of it is kept around head and shoulders; the
+//   shadow fades out well before any edge of the frame.
+import { Picture } from 'astro:assets';
+import portrait from '../../assets/brand/portrait-cover.jpg';
+import { site } from '../../config/site';
+import { cover } from '../../content/home';
+---
+
+<section class="cover" aria-labelledby="cover-title">
+  <div class="cover__copy shell">
+    <p class="label">{site.name}</p>
+    <h1 id="cover-title" class="display cover__title">{site.tagline}</h1>
+  </div>
+
+  <div class="cover__scene">
+    <Picture
+      src={portrait}
+      alt={cover.alt}
+      formats={['avif', 'webp']}
+      widths={[640, 960, 1280, 1536]}
+      sizes="(min-width: 64rem) 100vw, (min-width: 40rem) and (min-aspect-ratio: 4/3) 100vw, (min-width: 40rem) 150vw, 200vw"
+      loading="eager"
+      fetchpriority="high"
+      class="cover__img"
+    />
+  </div>
+</section>
+
+<style>
+  .cover {
+    position: relative;
+    isolation: isolate;
+  }
+
+  /* ─── Narrow/portrait: the line, then the man ─────────────────────── */
+  .cover__copy {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1rem, 0.75rem + 1vw, 1.5rem);
+    padding-top: calc(var(--header-h) + clamp(2rem, 1rem + 5vw, 4.5rem));
+  }
+
+  .cover__scene {
+    position: relative;
+    overflow: hidden;
+    margin-top: clamp(0.25rem, 2vw, 1.5rem);
+    aspect-ratio: 3 / 4;
+  }
+
+  .cover__scene :global(picture) {
+    display: contents;
+  }
+
+  .cover__scene :global(.cover__img) {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: auto;
+    max-width: none;
+    height: 100%;
+    aspect-ratio: 3 / 2;
+    /* He stands at x 61.5–86.7% of the frame (centre ≈ 74%): centre him.
+       The frame is scaled to the box height, so head (6.8%) and feet
+       (94.9%) always stay in. */
+    transform: translateX(-74%);
+    /* Tight figure ∪ floor shadow. Here the portrait's backdrop sits right
+       against the mesh, and it is warmer and pinker than the mesh around
+       his head and shoulders, so any band of it kept around him reads as a
+       glow. cover-mask-figure-tight.png is his silhouette matte (traced
+       from the portrait's pixels, grown ≈ 3px and feathered ≈ 2px); only
+       the soft shadow under his shoes is kept from the scene. */
+    -webkit-mask-image: url('./cover-mask-figure-tight.png'), url('./cover-mask-scene-stacked.svg');
+    -webkit-mask-position: 0 0;
+    -webkit-mask-size: 100% 100%;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-composite: source-over;
+    mask-image: url('./cover-mask-figure-tight.png'), url('./cover-mask-scene-stacked.svg');
+    mask-position: 0 0;
+    mask-size: 100% 100%;
+    mask-repeat: no-repeat;
+    mask-composite: add;
+  }
+
+  @media (min-width: 40rem) {
+    .cover__scene {
+      aspect-ratio: auto;
+      height: min(100vw, 44rem);
+    }
+  }
+
+  /* ─── Wide: the book's spread ─────────────────────────────────────── */
+  @media (min-width: 64rem), (min-width: 40rem) and (min-aspect-ratio: 4/3) {
+    .cover {
+      /* The frame is 3:2. At ≤ 66.67vw tall the whole scene fits the width
+         at full height, so the figure is never cropped on any screen. */
+      --cover-h: max(32rem, min(100svh, 66.667vw));
+      height: var(--cover-h);
+    }
+
+    .cover__copy {
+      gap: clamp(1rem, 0.5rem + 0.8vw, 1.5rem);
+      padding-top: calc(var(--cover-h) * 0.235);
+    }
+
+    .cover__title {
+      /* The book's cover size (≈ 4.6% of the page width) — a step below
+         the site-wide display size so the line keeps clear of the figure. */
+      font-size: clamp(2.5rem, 0.5rem + 4.1vw, 5.25rem);
+      line-height: 1.04;
+      /* Breaks like the cover: "Bring out the best in / people." */
+      max-width: min(10.6em, 50vw);
+      text-wrap: wrap;
+    }
+
+    .cover__scene {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      height: auto;
+      margin: 0;
+      aspect-ratio: auto;
+    }
+
+    .cover__scene :global(.cover__img) {
+      /* On short screens the frame drops just enough for his head
+         (6.8% down the frame) to clear the fixed header. */
+      --scene-top: max(0px, calc((var(--header-h) + 0.25rem - var(--cover-h) * 0.068) / 0.932));
+      top: var(--scene-top);
+      right: 0;
+      left: auto;
+      height: calc(100% - var(--scene-top));
+      transform: none;
+      /* Figure ∪ (top fade ∩ scene): he stays fully opaque; the scene
+         thins out to the left, toward the floor and at the frame top. */
+      -webkit-mask-image:
+        url('./cover-mask-figure.svg'),
+        linear-gradient(to bottom, transparent 0%, #000 9%),
+        url('./cover-mask-scene-wide.svg');
+      -webkit-mask-composite: source-over, source-in;
+      mask-image:
+        url('./cover-mask-figure.svg'),
+        linear-gradient(to bottom, transparent 0%, #000 9%),
+        url('./cover-mask-scene-wide.svg');
+      mask-composite: add, intersect;
+    }
+  }
+</style>

@@ -1,0 +1,142 @@
+---
+import Base from '../../layouts/Base.astro';
+import WritingOpening from '../../components/writing/WritingOpening.astro';
+import PostRow from '../../components/writing/PostRow.astro';
+import { pillars, posts } from '../../content/thinking';
+import { tieDashes } from '../../utils/typography';
+
+const isProd = import.meta.env.PROD;
+
+// Drafts hide entirely in prod; they render muted in dev so the layout stays testable.
+const visiblePosts = posts.filter((post) => (isProd ? post.status === 'published' : true));
+
+// Only include pillars that have at least one visible post.
+const grouped = pillars
+  .map((pillar) => ({
+    ...pillar,
+    id: `pillar-${pillar.key.replace(/\s+/g, '-').toLowerCase()}`,
+    entries: visiblePosts.filter((post) => post.pillar === pillar.key),
+  }))
+  .filter((group) => group.entries.length > 0);
+---
+
+<Base
+  title="Thinking"
+  description="Writing on people systems, judgment calls, and building with AI. Direct, grounded, precise."
+>
+  <WritingOpening
+    label="Thinking"
+    title="The point first. The work carries the claim."
+    intro="Direct, grounded, precise, at times blunt. Writing on people systems, judgment calls, and building with AI."
+    id="thinking-heading"
+  />
+
+  <div class="shell pillars">
+    {grouped.map((group) => (
+      <section class="pillar" aria-labelledby={group.id}>
+        <header class="pillar__header">
+          <h2 class="label" id={group.id}>{group.key}</h2>
+          <p class="pillar__blurb quiet">{tieDashes(group.blurb)}</p>
+        </header>
+
+        <ul class="pillar__list" role="list">
+          {group.entries.map((post) => (
+            <li class="pillar__item">
+              <PostRow
+                href={`/thinking/${post.slug}`}
+                title={post.title}
+                tension={post.tension}
+                readingTime={post.readingTime}
+                draft={post.status === 'draft'}
+              />
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))}
+  </div>
+</Base>
+
+<style>
+  .pillars {
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Each pillar opens on a full-width neutral hairline; the last one closes. */
+  .pillar {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 0.5rem;
+    padding-top: clamp(2rem, 1.5rem + 1.5vw, 3rem);
+    border-top: 1px solid var(--color-hairline);
+  }
+
+  .pillar + .pillar {
+    margin-top: clamp(3rem, 2rem + 3vw, 5rem);
+  }
+
+  .pillar:last-child {
+    border-bottom: 1px solid var(--color-hairline);
+  }
+
+  /* On one column the opening's amber rule already closes the spread — no
+     second line straight after it. */
+  @media (max-width: 47.99rem) {
+    .pillar:first-child {
+      padding-top: 0;
+      border-top: 0;
+    }
+  }
+
+  .pillar__header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .pillar__blurb {
+    max-width: 22rem;
+    font-size: var(--text-body);
+    line-height: 1.55;
+  }
+
+  .pillar__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .pillar__item + .pillar__item {
+    border-top: 1px solid var(--color-hairline);
+  }
+
+  @media (min-width: 48rem) {
+    .pillar {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: var(--grid-gap);
+      row-gap: 0;
+    }
+
+    /* Same top and bottom clearance as a post row, so when the end of the
+       pillar pushes the pinned header, the blurb stops a row's padding above
+       the hairline instead of sitting on it. */
+    .pillar__header {
+      grid-column: 1 / span 4;
+      align-self: start;
+      position: sticky;
+      top: calc(var(--header-h) + 2rem);
+      padding-block: clamp(1.75rem, 1.1rem + 2vw, 2.75rem);
+      padding-right: 1rem;
+    }
+
+    .pillar__list {
+      grid-column: 5 / -1;
+    }
+
+    /* The first row sits flush under the pillar hairline. */
+    .pillar {
+      padding-top: 0;
+    }
+  }
+</style>

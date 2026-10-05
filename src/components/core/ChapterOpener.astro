@@ -1,0 +1,90 @@
+---
+// The book's chapter opener (pp. 2 and 11): a big bold two-word title
+// top-left, broken one word per line; quiet grey text stepping down in the
+// right half, closed by a short amber rule well below it. Carries the page h1.
+import SectionHeading from '../SectionHeading.astro';
+import Rule from '../Rule.astro';
+
+type Props = {
+  label: string;
+  title: string;
+  lines: readonly string[];
+  id?: string;
+};
+
+const { label, title, lines, id = 'page-title' } = Astro.props;
+---
+
+<section class="section chapter" aria-labelledby={id}>
+  <div class="shell chapter__grid">
+    <SectionHeading
+      as="h1"
+      id={id}
+      label={label}
+      title={title}
+      size="display"
+      class="chapter__heading"
+    />
+    <div class="chapter__text">
+      {lines.map((line) => <p class="lead quiet">{line}</p>)}
+      <Rule tone="amber" class="chapter__rule" />
+    </div>
+  </div>
+</section>
+
+<style>
+  /* The opener sits closer to the header than the rhythm between spreads. */
+  .chapter {
+    padding-top: clamp(3rem, 2rem + 4vw, 6.5rem);
+  }
+
+  .chapter__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: clamp(2.5rem, 2rem + 2vw, 3.5rem);
+  }
+
+  .chapter__text {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    max-width: 32rem;
+  }
+
+  .chapter__grid :global(.chapter__rule) {
+    margin-top: clamp(1.5rem, 0.5rem + 3vw, 4rem);
+  }
+
+  @media (min-width: 48rem) {
+    .chapter__grid {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: var(--grid-gap);
+      align-items: start;
+    }
+
+    .chapter__grid > :global(.chapter__heading) {
+      grid-column: 1 / span 6;
+      grid-row: 1;
+    }
+
+    /* One word per line, as the book sets "Brand / Platform". */
+    .chapter__grid :global(.chapter__heading > h1) {
+      width: min-content;
+    }
+
+    /* Text steps down to the title's last line (label + gap + ~1.5 lines). */
+    .chapter__text {
+      grid-column: 7 / span 6;
+      grid-row: 1;
+      padding-top: calc(
+        var(--heading-offset) + var(--text-display) * var(--leading-display) * 1.55
+      );
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .chapter__text {
+      grid-column: 7 / span 5;
+    }
+  }
+</style>

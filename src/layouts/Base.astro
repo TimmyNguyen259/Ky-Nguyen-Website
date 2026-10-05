@@ -1,0 +1,117 @@
+---
+import '../styles/global.css';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import { site } from '../config/site';
+
+type Props = {
+  title?: string;
+  description?: string;
+  ogImage?: string;
+  noindex?: boolean;
+  /** 'article' for posts and the case; everything else is a website. */
+  type?: 'website' | 'article';
+  /**
+   * Let the first section slide under the fixed header (used by the home
+   * cover so the portrait scene reaches the top edge of the viewport).
+   */
+  underHeader?: boolean;
+  /**
+   * Show the ethos line in the footer's closing block. Pages that already
+   * set the ethos themselves (/about, /contact) turn it off so it isn't
+   * repeated a few lines later.
+   */
+  footerEthos?: boolean;
+};
+
+const {
+  title,
+  description = site.description,
+  ogImage = site.ogImage,
+  noindex = false,
+  type = 'website',
+  underHeader = false,
+  footerEthos = true,
+} = Astro.props;
+
+const pageTitle = title ? `${title} — ${site.name}` : site.title;
+const canonical = new URL(Astro.url.pathname, Astro.site ?? site.url).toString();
+const ogImageAbsolute = new URL(ogImage, Astro.site ?? site.url).toString();
+const currentPath = Astro.url.pathname;
+
+// JSON-LD Person schema — only on the home page so it isn't repeated across the site.
+const isHome = currentPath === '/' || currentPath === '';
+const personSchema = isHome
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'Person',
+      name: site.name,
+      alternateName: site.nameVi,
+      description: site.description,
+      url: site.url,
+      sameAs: [site.linkedin].filter(Boolean),
+    }
+  : null;
+---
+
+<!doctype html>
+<html lang={site.locale}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="theme-color" content={site.themeColor} />
+    <meta name="color-scheme" content="light" />
+
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    {!noindex && <link rel="canonical" href={canonical} />}
+
+    {noindex && <meta name="robots" content="noindex" />}
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <meta property="og:type" content={type} />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    {!noindex && <meta property="og:url" content={canonical} />}
+    <meta property="og:image" content={ogImageAbsolute} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={`${site.name} — ${site.tagline}`} />
+    <meta property="og:locale" content="en_US" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageAbsolute} />
+    <meta name="twitter:image:alt" content={`${site.name} — ${site.tagline}`} />
+
+    {personSchema && (
+      <script type="application/ld+json" set:html={JSON.stringify(personSchema)} />
+    )}
+
+    <slot name="head" />
+  </head>
+  <body id="top" data-under-header={underHeader ? 'true' : undefined}>
+    <a href="#main" class="skip-link">Skip to main content</a>
+
+    <SiteHeader currentPath={currentPath} />
+
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+
+    <SiteFooter showEthos={footerEthos} />
+  </body>
+</html>
+
+<style is:global>
+  body[data-under-header='true'] main {
+    padding-top: 0;
+  }
+</style>

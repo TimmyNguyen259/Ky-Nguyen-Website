@@ -1,0 +1,65 @@
+---
+import Base from '../../layouts/Base.astro';
+import WritingOpening from '../../components/writing/WritingOpening.astro';
+import CaseRow from '../../components/CaseRow.astro';
+import { caseIndex } from '../../content/cases';
+
+const isProd = import.meta.env.PROD;
+
+// Drafts hide entirely in prod; they render muted in dev so the layout stays testable.
+const visibleCases = caseIndex.filter((c) => (isProd ? c.status === 'published' : true));
+---
+
+<Base
+  title="Cases"
+  description="Selected cases — judgment calls, systems built, and business decisions in game and tech."
+>
+  <WritingOpening
+    label="Cases"
+    title="Decisions with a trade-off, and what changed after."
+    intro="Each case names the belief that carried it, the decision that followed, and the outcome that was — or was not — proved by behavior and numbers."
+    id="cases-heading"
+  />
+
+  <div class="shell">
+    <ul class="case-list" role="list" aria-label="Cases">
+      {visibleCases.map((c) => (
+        <li class="case-list__item">
+          <CaseRow
+            href={`/cases/${c.slug}`}
+            category={c.category}
+            title={c.title}
+            tension={c.tension}
+            readingTime={c.readingTime}
+            muted={c.status === 'draft'}
+          />
+        </li>
+      ))}
+    </ul>
+  </div>
+</Base>
+
+<style>
+  .case-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-block: 1px solid var(--color-hairline);
+  }
+
+  .case-list__item + .case-list__item {
+    border-top: 1px solid var(--color-hairline);
+  }
+
+  /* On one column the opening's amber rule already closes the spread — no
+     second line straight after it. */
+  @media (max-width: 47.99rem) {
+    .case-list {
+      border-top: 0;
+    }
+
+    .case-list__item:first-child :global(.case-row) {
+      padding-top: 0;
+    }
+  }
+</style>

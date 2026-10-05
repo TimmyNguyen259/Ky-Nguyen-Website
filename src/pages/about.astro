@@ -1,0 +1,335 @@
+---
+// /about — the Brand Platform chapter of the brandbook, spread by spread
+// (book pp. 2, 5, 6, 8, 9, 10), closed by the approved Experience copy.
+// Every section floats on the fixed mesh surface; spreads are separated by
+// space and the book's hairlines only.
+import Base from '../layouts/Base.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import Rule from '../components/Rule.astro';
+import TraitsGrid from '../components/TraitsGrid.astro';
+import ValuesList from '../components/ValuesList.astro';
+import EvidenceRow from '../components/EvidenceRow.astro';
+import ChapterOpener from '../components/core/ChapterOpener.astro';
+import { site } from '../config/site';
+import { keepRanges, tieDashes } from '../utils/typography';
+import {
+  opening,
+  philosophy,
+  ethos,
+  traits,
+  values,
+  tone,
+  experience,
+} from '../content/about';
+
+const cvHref = site.cvPath && site.cvPath.length > 0 ? site.cvPath : null;
+
+---
+
+<Base title="About" description={opening.lines.join(' ')} footerEthos={false}>
+  {/* 1 · Brand Platform — book p. 2 */}
+  <ChapterOpener
+    id="about-title"
+    label={opening.label}
+    title={opening.title}
+    lines={opening.lines}
+  />
+
+  {/* 2 · Philosophy — book p. 5; "I / Believe" is set at the chapter-opener size */}
+  <section class="section" aria-labelledby="philosophy-title">
+    <div class="shell spread">
+      <SectionHeading
+        id="philosophy-title"
+        label={philosophy.label}
+        title={philosophy.title}
+        size="display"
+        class="believe__heading"
+      />
+      <ul class="believe" role="list">
+        {philosophy.statements.map((statement) => (
+          <li class="lead">{statement}</li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  {/* 3 · Ethos — book p. 6, a diagonal: title top-left, line low right */}
+  <section class="section" aria-labelledby="ethos-title">
+    <div class="shell spread">
+      <SectionHeading
+        id="ethos-title"
+        label={ethos.label}
+        title={ethos.title}
+        class="ethos__heading"
+      />
+      <div class="side-text ethos__line">
+        <p class="lead quiet">{ethos.line}</p>
+        <Rule tone="amber" class="side-text__rule" />
+      </div>
+    </div>
+  </section>
+
+  {/* 4 · Traits — book p. 8 */}
+  <section class="section" aria-labelledby="traits-title">
+    <div class="shell">
+      <SectionHeading id="traits-title" label={traits.label} title={traits.title} />
+      <div class="book-indent traits">
+        <TraitsGrid columns={traits.columns} />
+      </div>
+    </div>
+  </section>
+
+  {/* 5 · Values — book p. 9 */}
+  <section class="section" aria-labelledby="values-title">
+    <div class="shell">
+      <SectionHeading id="values-title" label={values.label} title={values.title} />
+      <div class="book-indent values">
+        <ValuesList items={values.items} />
+      </div>
+    </div>
+  </section>
+
+  {/* 6 · Tone of Voice — book p. 10 */}
+  <section class="section" aria-labelledby="tone-title">
+    <div class="shell">
+      <SectionHeading id="tone-title" label={tone.label} title={tone.title} />
+      <div class="spread tone">
+        <p class="book-indent tone__key">
+          {tone.keyLines.map((line, index) => (
+            <Fragment>
+              <span class="tone__line">{line}</span>{index < tone.keyLines.length - 1 && ' '}
+            </Fragment>
+          ))}
+        </p>
+        <div class="side-text tone__body">
+          <p class="lead quiet">{tone.body}</p>
+          <Rule tone="amber" class="side-text__rule" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* 7 · Experience — approved copy */}
+  <section class="section" aria-labelledby="experience-title">
+    <div class="shell">
+      <div class="spread experience">
+        <SectionHeading
+          id="experience-title"
+          label={experience.label}
+          title={experience.heading}
+          class="experience__heading"
+        />
+        <div class="experience__narrative">
+          {experience.paragraphs.map((paragraph) => <p>{keepRanges(tieDashes(paragraph))}</p>)}
+        </div>
+      </div>
+
+      <ul class="experience__facts" role="list" aria-label="Experience in figures">
+        {experience.facts.map((fact) => (
+          <EvidenceRow as="li" value={fact.label} context={fact.context} />
+        ))}
+      </ul>
+
+      {cvHref && (
+        <p class="experience__cv">
+          <a href={cvHref} class="link" download>
+            Download CV <span aria-hidden="true">↓</span>
+          </a>
+        </p>
+      )}
+    </div>
+  </section>
+</Base>
+
+<style>
+  /*
+   * The spread grid. One column on phones; from tablet up a 12-column
+   * mental grid mirroring the book's x-positions (≈5% outer margin from
+   * .shell, the right-hand text column on the centre line).
+   * SectionHeading's root carries its own scope, so it is reached via :global.
+   */
+  .spread {
+    /* var(--heading-offset) (global.css) drops right-hand text to the title's top. */
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: clamp(2.5rem, 2rem + 2vw, 3.5rem);
+  }
+
+  /* Quiet grey text closed by a short amber rule well below it (pp. 6, 10). */
+  .side-text {
+    display: flex;
+    flex-direction: column;
+    max-width: 32rem;
+  }
+
+  .side-text :global(.side-text__rule) {
+    margin-top: clamp(2.5rem, 1.5rem + 3vw, 5rem);
+  }
+
+  /* ─── Philosophy ─────────────────────────────────────────────────────── */
+  .believe {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1.25rem, 1rem + 1vw, 2rem);
+    max-width: 38rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  /*
+   * ─── Ethos ────────────────────────────────────────────────────────────
+   * Book p. 6 sets this title ≈ 1.17× a normal section title (between
+   * --text-h2 and --text-display). On phones "pretty" avoids the lone
+   * "Working" that balance leaves; from tablet up balance gives the book's
+   * "Working with Honesty / and Dedication".
+   */
+  .spread :global(.ethos__heading > h2) {
+    max-width: 24ch;
+    font-size: clamp(2.5rem, 1.8rem + 3vw, 4.25rem);
+    text-wrap: pretty;
+  }
+
+  .ethos__line {
+    margin-top: clamp(0.5rem, -2rem + 10vw, 13rem);
+  }
+
+  /* ─── Traits · Values ────────────────────────────────────────────────── */
+  .traits {
+    margin-top: clamp(2.75rem, 2rem + 3vw, 5rem);
+  }
+
+  .values {
+    margin-top: clamp(2.5rem, 1.75rem + 2.5vw, 4.5rem);
+  }
+
+  /* ─── Tone of Voice ──────────────────────────────────────────────────── */
+  .tone {
+    margin-top: clamp(2.75rem, 2rem + 3vw, 6rem);
+  }
+
+  /* Set at ≈ 0.85× the section title — the book's ratio on p. 10. */
+  .tone__key {
+    font-size: clamp(1.75rem, 1.2rem + 2.2vw, 3.125rem);
+    font-weight: 700;
+    line-height: 1.12;
+    letter-spacing: var(--tracking-heading);
+    color: var(--color-ink);
+  }
+
+  /* The book's three-line break holds at every width. */
+  .tone__line {
+    display: block;
+  }
+
+  .tone__body .lead {
+    max-width: 28rem;
+  }
+
+  /* ─── Experience ─────────────────────────────────────────────────────── */
+  .experience__narrative {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25em;
+    max-width: 38rem;
+    font-size: var(--text-body);
+    line-height: var(--leading-body);
+    color: var(--color-ink);
+  }
+
+  .experience__facts {
+    margin: clamp(3.5rem, 2.5rem + 3vw, 6rem) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .experience__cv {
+    margin-top: 2.5rem;
+  }
+
+  /* ─── Tablet up: the spreads open into two sides ─────────────────────── */
+  @media (min-width: 48rem) {
+    .spread {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: var(--grid-gap);
+      align-items: start;
+    }
+
+    .spread > :global(*) {
+      grid-column: 1 / -1;
+    }
+
+    /* I Believe: "I / Believe" left, statements top-aligned with the title. */
+    .spread > :global(.believe__heading) {
+      grid-column: 1 / span 5;
+      grid-row: 1;
+    }
+
+    .spread :global(.believe__heading > h2) {
+      width: min-content;
+    }
+
+    /*
+     * As on p. 5, the first statement sits on the baseline of "I": title top
+     * + the display line's baseline (Noto Sans Bold at 1.06 ≈ 0.92em) − the
+     * lead line's baseline (Noto Sans at 1.45 ≈ 1.11em).
+     */
+    .believe {
+      grid-column: 6 / span 7;
+      grid-row: 1;
+      padding-top: calc(
+        var(--heading-offset) + var(--text-display) * 0.92 - var(--text-lead) * 1.11
+      );
+    }
+
+    /* Ethos: the title breaks as the book's two lines; the line drops into the right half. */
+    .spread :global(.ethos__heading > h2) {
+      text-wrap: balance;
+    }
+
+    .ethos__line {
+      grid-column: 7 / span 6;
+    }
+
+    /* Tone of Voice: bold key line left, quiet paragraph right. */
+    .tone__key {
+      grid-column: 1 / span 6;
+      grid-row: 1;
+      font-size: clamp(1.75rem, 0.9rem + 2.5vw, 3.125rem);
+    }
+
+    .tone__body {
+      grid-column: 7 / span 6;
+      grid-row: 1;
+      padding-top: 0.35em;
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .ethos__line,
+    .tone__body {
+      grid-column: 7 / span 5;
+    }
+
+    .believe {
+      grid-column: 6 / span 6;
+    }
+
+    /* The book sets list content a hair inside the title's left edge. */
+    .book-indent {
+      padding-inline-start: 1.25rem;
+    }
+
+    /* Experience: title left, narrative on the right-hand column. */
+    .spread > :global(.experience__heading) {
+      grid-column: 1 / span 5;
+      grid-row: 1;
+    }
+
+    .experience__narrative {
+      grid-column: 7 / span 5;
+      grid-row: 1;
+      padding-top: var(--heading-offset);
+    }
+  }
+</style>

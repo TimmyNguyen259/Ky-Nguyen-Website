@@ -1,0 +1,188 @@
+---
+// One build, set like a page of the book's spec sheets: a quiet label rail on
+// the left (status, then The pain / The system hypothesis / Stack & evidence)
+// and one ink content column on the right. On phones the rail stacks above.
+import { buildsPage, buildStatusLabel, type Build } from '../../content/builds';
+import { tieDashes } from '../../utils/typography';
+
+type Props = {
+  build: Build;
+  /** Live product URL — rendered only when it exists in site.ts. */
+  href?: string;
+  /** Source URL — rendered only when it exists in site.ts. */
+  sourceHref?: string;
+};
+
+const { build, href, sourceHref } = Astro.props;
+const headingId = `build-${build.slug}`;
+const hasLinks = Boolean(href || sourceHref);
+---
+
+<article class="build" aria-labelledby={headingId}>
+  <p class="label build__status">{buildStatusLabel[build.status]}</p>
+
+  <div class="build__intro">
+    <h2 id={headingId} class="h3 build__name">{build.name}</h2>
+    <p class="lead build__tagline">{tieDashes(build.tagline)}</p>
+  </div>
+
+  <dl class="build__facts">
+    <div class="build__row">
+      <dt class="label">{buildsPage.rows.pain}</dt>
+      <dd class="body build__text">{tieDashes(build.pain)}</dd>
+    </div>
+    <div class="build__row">
+      <dt class="label">{buildsPage.rows.hypothesis}</dt>
+      <dd class="body build__text">{tieDashes(build.hypothesis)}</dd>
+    </div>
+    <div class="build__row">
+      <dt class="label">{buildsPage.rows.stack}</dt>
+      <dd>
+        <ul class="build__stack">
+          {build.stack.map((item) => <li class="build__pill">{item}</li>)}
+        </ul>
+      </dd>
+    </div>
+  </dl>
+
+  {hasLinks && (
+    <ul class="build__links">
+      {href && (
+        <li>
+          <a href={href} class="link" target="_blank" rel="noreferrer noopener">
+            Open<span class="sr-only"> {build.name}</span>
+            <span aria-hidden="true">↗</span>
+            <span class="sr-only"> (opens in a new tab)</span>
+          </a>
+        </li>
+      )}
+      {sourceHref && (
+        <li>
+          <a href={sourceHref} class="link" target="_blank" rel="noreferrer noopener">
+            View on GitHub
+            <span aria-hidden="true">↗</span>
+            <span class="sr-only"> (opens in a new tab)</span>
+          </a>
+        </li>
+      )}
+    </ul>
+  )}
+</article>
+
+<style>
+  .build {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    padding-block: clamp(3rem, 2rem + 3.5vw, 5.5rem);
+    border-top: 1px solid var(--color-hairline);
+  }
+
+  .build__intro {
+    display: flex;
+    flex-direction: column;
+    gap: 0.875rem;
+    margin-top: 1rem;
+  }
+
+  .build__name {
+    max-width: 22ch;
+  }
+
+  .build__tagline {
+    max-width: 34rem;
+  }
+
+  .build__facts {
+    display: grid;
+    row-gap: 1.75rem;
+    margin-top: clamp(2.25rem, 1.75rem + 2vw, 3.5rem);
+  }
+
+  .build__row {
+    display: grid;
+    row-gap: 0.625rem;
+  }
+
+  /* dd, not p, so the global `p { text-wrap: pretty }` doesn't reach it —
+     set it here so no body row ends on a lone word. */
+  .build__text {
+    max-width: 40rem;
+    color: var(--color-ink);
+    text-wrap: pretty;
+  }
+
+  /* Quiet pills — the swatch-card edge, translucent white over the mesh. */
+  .build__stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .build__pill {
+    padding: 0.3125rem 0.875rem;
+    border: 1px solid var(--color-line);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--color-white) 62%, transparent);
+    font-size: var(--text-small);
+    line-height: 1.4;
+    color: var(--color-ink);
+  }
+
+  .build__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 2rem;
+    margin: 2.5rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  /*
+   * Desktop: the page's two-column axis (label rail ≈ 3/12, content 9/12)
+   * — the content edge lands where the book starts its Statement copy.
+   */
+  @media (min-width: 64rem) {
+    .build {
+      grid-template-columns: minmax(0, 3fr) minmax(0, 9fr);
+      column-gap: var(--grid-gap);
+    }
+
+    .build__status,
+    .build__intro {
+      grid-row: 1;
+      align-self: baseline;
+    }
+
+    .build__status {
+      grid-column: 1;
+    }
+
+    .build__intro {
+      grid-column: 2;
+      margin-top: 0;
+    }
+
+    .build__facts,
+    .build__row {
+      grid-column: 1 / -1;
+      grid-template-columns: subgrid;
+    }
+
+    .build__facts {
+      row-gap: 2rem;
+    }
+
+    /* Subgrid rows inherit the parent's column gap, so every label and
+       every body shares one axis across the whole list. */
+    .build__row {
+      align-items: baseline;
+    }
+
+    .build__links {
+      grid-column: 2;
+    }
+  }
+</style>

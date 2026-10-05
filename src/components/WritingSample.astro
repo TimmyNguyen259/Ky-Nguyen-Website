@@ -1,0 +1,122 @@
+---
+// A Thinking post, composed like the book's Statement spread: label and big
+// title at the left margin, the reading column stepping in to the right.
+// Pillar, title and reading time come from src/content/thinking.ts — the
+// page only supplies the body (and an optional writing-pattern note).
+import ArticleHeader from './writing/ArticleHeader.astro';
+import ArticleNav from './writing/ArticleNav.astro';
+import { getPost, publishedPosts } from '../content/thinking';
+import { tieDashes } from '../utils/typography';
+
+type Props = {
+  slug: string;
+  pattern?: string;
+};
+
+const { slug, pattern } = Astro.props;
+const post = getPost(slug);
+
+if (!post) {
+  throw new Error(`WritingSample: no post "${slug}" in src/content/thinking.ts`);
+}
+// Drafts never get a public route — fail the build instead of shipping one.
+if (import.meta.env.PROD && post.status !== 'published') {
+  throw new Error(`WritingSample: "${slug}" is not published`);
+}
+
+// Render the body once so the ending can be read: a post that closes on a
+// pull quote already ends on the quote's amber rule, so the nav below drops
+// its own hairline (the case page ends the same way — amber rule, then nav).
+const body = tieDashes(await Astro.slots.render('default'));
+const endsOnQuote = /<\/blockquote>\s*$/i.test(body);
+
+const index = publishedPosts.findIndex((entry) => entry.slug === slug);
+const nextPost =
+  index !== -1 && publishedPosts.length > 1
+    ? publishedPosts[(index + 1) % publishedPosts.length]
+    : undefined;
+---
+
+<div class="shell writing">
+  <article class="writing__article" aria-labelledby="article-title">
+    <ArticleHeader meta={[post.pillar, post.readingTime]} title={post.title} id="article-title" />
+
+    <div class="writing__grid">
+      {pattern && (
+        <p class="writing__pattern">
+          <span class="label">Pattern</span>
+          <span class="writing__pattern-text">{pattern}</span>
+        </p>
+      )}
+      <div class="prose writing__body">
+        <Fragment set:html={body} />
+      </div>
+    </div>
+  </article>
+
+  <div class="writing__nav">
+    <ArticleNav
+      label="More thinking"
+      back={{ href: '/thinking', label: 'All thinking' }}
+      next={nextPost ? { href: `/thinking/${nextPost.slug}`, title: nextPost.title } : undefined}
+      rule={!endsOnQuote}
+    />
+  </div>
+</div>
+
+<style>
+  .writing {
+    padding-block: clamp(3rem, 1.5rem + 5vw, 7rem) 0;
+  }
+
+  .writing__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 2rem;
+    margin-top: clamp(2.5rem, 1.5rem + 4vw, 6rem);
+  }
+
+  .writing__pattern {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+  }
+
+  .writing__pattern-text {
+    font-size: var(--text-small);
+    line-height: 1.5;
+    color: var(--color-quiet);
+  }
+
+  /* The last element's own bottom margin (the pull quote's 2.5rem) would add
+     to the gap below; the nav's margin alone sets it, as on the case page. */
+  .writing__body > :global(:last-child) {
+    margin-bottom: 0;
+  }
+
+  /* Full width, like the case page, so "← All …" sits in one place on both
+     article types. */
+  .writing__nav {
+    margin-top: clamp(3.5rem, 2.5rem + 4vw, 6.5rem);
+  }
+
+  @media (min-width: 64rem) {
+    .writing__grid {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: var(--grid-gap);
+      align-items: start;
+    }
+
+    /* A margin note in the left column, beside the first paragraph. */
+    .writing__pattern {
+      grid-column: 1 / span 3;
+      grid-row: 1;
+      padding-top: 0.35rem;
+    }
+
+    .writing__body {
+      grid-column: 5 / -1;
+      grid-row: 1;
+    }
+  }
+</style>

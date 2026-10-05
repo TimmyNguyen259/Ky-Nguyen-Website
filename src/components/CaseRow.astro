@@ -1,0 +1,141 @@
+---
+// One case on the Cases index. Category and reading time sit in the left
+// label column; the bold title, grey tension and "Read the case →" fill the
+// reading column. The visible cue is the link — its name starts with what it
+// says ("Read the case") so voice control can target it, then carries the
+// title for context — and its hit area covers the row. Drafts (dev only) are
+// muted and not linked.
+import DraftBadge from './writing/DraftBadge.astro';
+import { tieDashes } from '../utils/typography';
+
+type Props = {
+  href: string;
+  category: string;
+  title: string;
+  tension: string;
+  readingTime: string;
+  muted?: boolean;
+};
+
+const { href, category, title, tension, readingTime, muted = false } = Astro.props;
+const showReadingTime = readingTime && readingTime.trim() !== '—';
+---
+
+<article class:list={['case-row', { 'case-row--draft': muted }]}>
+  <div class="case-row__meta">
+    <p class="label">{category}</p>
+    {(showReadingTime || muted) && (
+      <p class="case-row__sub">
+        {showReadingTime && <span class="label">{readingTime}</span>}
+        {muted && <DraftBadge />}
+      </p>
+    )}
+  </div>
+
+  <div class="case-row__main">
+    <h2 class="case-row__title h3">{title}</h2>
+    <p class="case-row__tension quiet">{tieDashes(tension)}</p>
+    {!muted && (
+      <a href={href} class="link case-row__link">
+        Read the case<span class="sr-only">: {title}</span>
+        <span class="case-row__arrow" aria-hidden="true">→</span>
+      </a>
+    )}
+  </div>
+</article>
+
+<style>
+  .case-row {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 1rem;
+    padding-block: clamp(2rem, 1.25rem + 2.5vw, 3.5rem);
+  }
+
+  .case-row__meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .case-row__sub {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 0.875rem;
+    min-height: 1.5rem;
+  }
+
+  .case-row__main {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: clamp(0.875rem, 0.6rem + 0.8vw, 1.25rem);
+  }
+
+  .case-row__title {
+    max-width: 30ch;
+  }
+
+  .case-row__tension {
+    max-width: 40rem;
+    font-size: var(--text-body);
+    line-height: var(--leading-body);
+  }
+
+  /* Global .link look. Its ::after stretches over the row, so hovering
+     anywhere on the row hovers the link and draws the amber hairline. */
+  .case-row__link {
+    margin-top: 0.5rem;
+  }
+
+  .case-row__link::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+
+  /* Focus rings the whole row, the same as the hit area. */
+  .case-row__link:focus-visible {
+    outline: none;
+  }
+
+  .case-row:has(.case-row__link:focus-visible) {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 4px;
+    border-radius: 2px;
+  }
+
+  .case-row__arrow {
+    display: inline-block;
+    transition: transform 180ms var(--ease);
+  }
+
+  .case-row__link:hover .case-row__arrow,
+  .case-row__link:focus-visible .case-row__arrow {
+    transform: translateX(3px);
+  }
+
+  .case-row--draft .case-row__title {
+    color: var(--color-quiet);
+  }
+
+  @media (min-width: 48rem) {
+    .case-row {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: var(--grid-gap);
+      align-items: start;
+    }
+
+    .case-row__meta {
+      grid-column: 1 / span 4;
+      padding-top: 0.55rem;
+      padding-right: 1rem;
+    }
+
+    .case-row__main {
+      grid-column: 5 / -1;
+    }
+  }
+</style>

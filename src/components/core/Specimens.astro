@@ -1,0 +1,107 @@
+---
+// Restrained specimens under the Typography · The Mark · The Portrait triad:
+// the two weights the site ships and the KN mark set large with room around
+// it. The portrait has no specimen on purpose: the book says he "sits inside
+// the scene, sharing one continuous background with the page", so he is
+// shown in scene on the home cover, never as a cut-out card.
+// From 52rem the strip shares the Triad's three columns and gap, so each
+// specimen sits under its own heading (the Portrait column stays empty);
+// below that it is one compact two-up row of samples.
+import { site } from '../../config/site';
+import { specimens } from '../../content/core-elements';
+---
+
+<div class="specimens">
+  <figure class="specimen">
+    <div class="specimen__stage" aria-hidden="true">
+      <span class="specimen__aa specimen__aa--bold">Aa</span>
+      <span class="specimen__aa specimen__aa--regular">Aa</span>
+    </div>
+    <figcaption class="specimen__caption">
+      <span class="label">{specimens.type.label}</span>
+      <span class="specimen__detail quiet">{specimens.type.detail}</span>
+    </figcaption>
+  </figure>
+
+  <figure class="specimen">
+    <div class="specimen__stage" aria-hidden="true">
+      <span class="specimen__mark">{site.mark}</span>
+    </div>
+    <figcaption class="specimen__caption">
+      <span class="label">{specimens.mark.label}</span>
+      <span class="specimen__detail quiet">{specimens.mark.detail}</span>
+    </figcaption>
+  </figure>
+</div>
+
+<style>
+  .specimens {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: clamp(1.25rem, 0.75rem + 2vw, 2rem);
+  }
+
+  /* Each column sizes its own specimen (cqi), so the strip holds on phones. */
+  .specimen {
+    container-type: inline-size;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.875rem, 0.5rem + 1vw, 1.25rem);
+  }
+
+  /* Same stage height in every column, content resting on one baseline. */
+  .specimen__stage {
+    display: flex;
+    align-items: flex-end;
+    gap: clamp(0.75rem, 0.5rem + 1.5vw, 2rem);
+    height: clamp(5rem, 3rem + 8vw, 8.5rem);
+  }
+
+  .specimen__caption {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .specimen__detail {
+    font-size: var(--text-small);
+    line-height: 1.45;
+    text-wrap: balance;
+  }
+
+  .specimen__aa {
+    font-size: min(clamp(4.5rem, 3rem + 5vw, 7.5rem), 34cqi);
+    line-height: 0.8;
+    letter-spacing: var(--tracking-heading);
+  }
+
+  .specimen__aa--bold {
+    font-weight: 700;
+    color: var(--color-ink);
+  }
+
+  .specimen__aa--regular {
+    font-weight: 400;
+    color: var(--color-quiet);
+  }
+
+  .specimen__mark {
+    font-size: min(clamp(3.5rem, 2.5rem + 3.5vw, 5.75rem), 30cqi);
+    font-weight: 700;
+    line-height: 0.8;
+    letter-spacing: 0.02em;
+    color: var(--color-ink);
+  }
+
+  /* Triad.astro's breakpoint, columns and gap. */
+  @media (min-width: 52rem) {
+    .specimens {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      column-gap: var(--triad-gap);
+    }
+
+    .specimen__stage {
+      height: clamp(8.5rem, 6rem + 7vw, 14.5rem);
+    }
+  }
+</style>

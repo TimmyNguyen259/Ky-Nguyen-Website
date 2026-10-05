@@ -1,0 +1,81 @@
+---
+// Brandbook FINAL · Colours — one swatch card as the book draws it: a
+// rounded card filled with the exact brand token, a 1px line edge and a soft
+// shadow; bold name and regular descriptor side by side. The hex value is
+// added for the web, set small, in the same contrast-safe text colour.
+type Props = {
+  name: string;
+  descriptor: string;
+  token: string;
+  hex: string;
+  on?: 'ink' | 'white';
+};
+
+const { name, descriptor, token, hex, on = 'ink' } = Astro.props;
+---
+
+<li class={`swatch swatch--on-${on}`} style={`--swatch-fill: var(${token});`}>
+  <p class="swatch__head">
+    <span class="swatch__name">{name}</span>
+    <span class="sr-only">, </span>
+    <span class="swatch__descriptor">{descriptor}</span>
+  </p>
+  <p class="swatch__hex"><span class="sr-only">Hex </span>{hex}</p>
+</li>
+
+<style>
+  .swatch {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 1.25rem;
+    min-height: clamp(5.75rem, 5rem + 2vw, 7rem);
+    padding: 0.875rem 1rem 0.8125rem;
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-card);
+    background: var(--swatch-fill);
+    /* The book's soft drop: a close contact shadow and a wider, fainter fall. */
+    box-shadow:
+      0 1px 2px color-mix(in srgb, var(--color-ink) 10%, transparent),
+      0 6px 16px -6px color-mix(in srgb, var(--color-ink) 18%, transparent);
+  }
+
+  .swatch--on-ink {
+    color: var(--color-ink);
+  }
+
+  .swatch--on-white {
+    color: var(--color-white);
+  }
+
+  .swatch__head {
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 0.75rem;
+    row-gap: 0.125rem;
+    font-size: 0.9375rem;
+    line-height: 1.35;
+  }
+
+  .swatch__name {
+    min-width: 5.75rem;
+    font-weight: 700;
+  }
+
+  .swatch__hex {
+    font-size: 0.8125rem;
+    line-height: 1.2;
+    letter-spacing: 0.04em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  @media (min-width: 64rem) {
+    .swatch {
+      padding: 1.125rem 1.25rem 1rem;
+    }
+
+    .swatch__name {
+      min-width: 6.5rem;
+    }
+  }
+</style>

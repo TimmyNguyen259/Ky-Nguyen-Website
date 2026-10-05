@@ -1,0 +1,48 @@
+---
+// Brandbook FINAL · The Mark — "The KN mark carries the name. Give it
+// breathing space. It should never compete with the thought on the page."
+// Set small, bold, ink — exactly as it sits in the corner of every page.
+import { site } from '../config/site';
+
+type Props = {
+  as?: 'a' | 'span';
+  href?: string;
+  class?: string;
+  label?: string;
+};
+
+const {
+  as = 'a',
+  href = '/',
+  class: className = '',
+  label = `${site.mark}, ${site.name} — Home`,
+} = Astro.props;
+const Tag = as;
+---
+
+<Tag
+  href={as === 'a' ? href : undefined}
+  class={`wordmark ${className}`.trim()}
+  aria-label={label}
+>
+  <span aria-hidden="true">{site.mark}</span>
+</Tag>
+
+<style>
+  .wordmark {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    padding-inline: 0.125rem;
+    font-size: 1.0625rem;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: 0.02em;
+    color: var(--color-ink);
+    transition: opacity 180ms var(--ease);
+  }
+
+  a.wordmark:hover {
+    opacity: 0.62;
+  }
+</style>

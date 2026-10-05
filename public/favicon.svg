@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <title>KN</title>
+  <defs>
+    <radialGradient id="kn-blue" cx="0" cy="60" r="44" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#C9DCED"/><stop offset="1" stop-color="#C9DCED" stop-opacity="0"/></radialGradient>
+    <radialGradient id="kn-lilac" cx="64" cy="62" r="42" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#DACDEB"/><stop offset="1" stop-color="#DACDEB" stop-opacity="0"/></radialGradient>
+    <radialGradient id="kn-peach" cx="60" cy="2" r="46" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#F4C7A4"/><stop offset="1" stop-color="#F4C7A4" stop-opacity="0"/></radialGradient>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="#FAF6F0"/>
+  <rect width="64" height="64" rx="14" fill="url(#kn-blue)"/>
+  <rect width="64" height="64" rx="14" fill="url(#kn-lilac)"/>
+  <rect width="64" height="64" rx="14" fill="url(#kn-peach)"/>
+  <path fill="#1D1D1F" d="M28.51 44H21.76L14.43 32.2L11.92 34V44H6V16H11.92V28.82Q12.51 28 13.1 27.18Q13.69 26.35 14.27 25.53L21.84 16H28.43L18.67 28.39ZM56.82 44H49.29L37.1 22.82H36.94Q37.02 24.16 37.08 25.49Q37.14 26.82 37.2 28.16Q37.25 29.49 37.29 30.82V44H32V16H39.49L51.65 36.98H51.76Q51.73 35.69 51.69 34.39Q51.65 33.1 51.59 31.82Q51.53 30.55 51.49 29.25V16H56.82Z"/>
+</svg>

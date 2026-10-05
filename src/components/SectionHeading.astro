@@ -1,0 +1,50 @@
+---
+// The book's page header: a tiny running label above a large bold title
+// ("VISION" / "Vision", "PHILOSOPHY" / "I Believe"). When the label only
+// repeats the title it is hidden from assistive tech so it isn't read twice.
+type Props = {
+  label?: string;
+  title: string;
+  as?: 'h1' | 'h2';
+  id?: string;
+  size?: 'title' | 'display';
+  class?: string;
+};
+
+const {
+  label,
+  title,
+  as = 'h2',
+  id,
+  size = 'title',
+  class: className = '',
+} = Astro.props;
+
+const Tag = as;
+const labelRepeatsTitle =
+  !!label && label.trim().toLowerCase() === title.trim().toLowerCase();
+---
+
+<header class={`section-heading ${className}`.trim()}>
+  {label && (
+    <p class="label" aria-hidden={labelRepeatsTitle ? 'true' : undefined}>
+      {label}
+    </p>
+  )}
+  <Tag id={id} class={size}>{title}</Tag>
+</header>
+
+<style>
+  .section-heading {
+    display: flex;
+    flex-direction: column;
+    /* Keep in step with --heading-offset (global.css), which pages use to
+       align side text with the title. */
+    gap: var(--heading-gap);
+  }
+
+  .section-heading > :global(h1),
+  .section-heading > :global(h2) {
+    max-width: 18ch;
+  }
+</style>

@@ -1,0 +1,160 @@
+---
+import Base from '../../layouts/Base.astro';
+import Rule from '../../components/Rule.astro';
+import ArticleHeader from '../../components/writing/ArticleHeader.astro';
+import ArticleNav from '../../components/writing/ArticleNav.astro';
+import { getCase, nextgen } from '../../content/cases';
+import { tieDashes } from '../../utils/typography';
+
+const entry = getCase(nextgen.slug);
+if (!entry) throw new Error(`Case "${nextgen.slug}" is missing from caseIndex`);
+const meta = [entry.category, entry.readingTime];
+
+// The book's triad voice carried through the narrative: Context takes the
+// palette's quiet grey, then Belief · Decision · Outcome run amber · ink · blue.
+const tones = ['quiet', 'amber', 'ink', 'blue'] as const;
+
+const sections = nextgen.sections.map((section, index) => {
+  const name = section.label.charAt(0) + section.label.slice(1).toLowerCase();
+  return {
+    name,
+    id: `case-${section.label.toLowerCase()}`,
+    tone: tones[index % tones.length],
+    body: section.body,
+  };
+});
+---
+
+<Base
+  type="article"
+  title="VNGGames Nextgen · A separate name was not a branding preference"
+  description="How VNGGames Nextgen chose a game-native identity over the safer parent-company brand."
+>
+  <div class="shell case">
+    <article class="case__article" aria-labelledby="article-title">
+      <ArticleHeader meta={meta} title={nextgen.title} id="article-title" />
+
+      <div class="case__grid">
+        <p class="lead quiet case__subtitle">{tieDashes(nextgen.subtitle)}</p>
+
+        {sections.map((section) => (
+          <section class="case__row" aria-labelledby={section.id}>
+            <div class="case__marker">
+              <h2 class="label" id={section.id}>{section.name}</h2>
+              <Rule
+                tone={section.tone === 'quiet' ? 'ink' : section.tone}
+                class={section.tone === 'quiet' ? 'case__rule case__rule--quiet' : 'case__rule'}
+              />
+            </div>
+            <p class="case__body">{tieDashes(section.body)}</p>
+          </section>
+        ))}
+      </div>
+
+      <div class="case__close">
+        <p class="statement case__close-line">{nextgen.close}</p>
+        <Rule tone="amber" class="case__close-rule" />
+      </div>
+    </article>
+
+    <div class="case__nav">
+      <ArticleNav label="More cases" back={{ href: '/cases', label: 'All cases' }} rule={false} />
+    </div>
+  </div>
+</Base>
+
+<style>
+  .case {
+    padding-block: clamp(3rem, 1.5rem + 5vw, 7rem) 0;
+  }
+
+  .case__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: clamp(3rem, 2rem + 3vw, 5rem);
+    margin-top: clamp(2rem, 1.25rem + 3vw, 4rem);
+  }
+
+  .case__subtitle {
+    max-width: 38rem;
+  }
+
+  .case__row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 1.25rem;
+  }
+
+  .case__marker {
+    display: flex;
+    flex-direction: column;
+    gap: 0.875rem;
+  }
+
+  .case__marker :global(.case__rule) {
+    max-width: 5rem;
+  }
+
+  /* Grey · Quiet, the palette's own neutral — no ad-hoc mix. */
+  .case__marker :global(.case__rule--quiet) {
+    --rule-color: var(--color-grey);
+  }
+
+  /* Ink narrative at reading size — a step above body, below the lead. */
+  .case__body {
+    max-width: 38rem;
+    font-size: clamp(1.0625rem, 0.95rem + 0.4vw, 1.25rem);
+    line-height: 1.6;
+    color: var(--color-ink);
+  }
+
+  .case__close {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(2rem, 1.25rem + 2.5vw, 3.5rem);
+    margin-top: clamp(5rem, 3rem + 6vw, 10rem);
+  }
+
+  .case__close-line {
+    max-width: 22ch;
+  }
+
+  .case__close :global(.case__close-rule) {
+    max-width: 30rem;
+  }
+
+  .case__nav {
+    margin-top: clamp(3.5rem, 2.5rem + 4vw, 6.5rem);
+  }
+
+  @media (min-width: 64rem) {
+    .case__grid,
+    .case__row {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: var(--grid-gap);
+    }
+
+    .case__subtitle {
+      grid-column: 5 / -1;
+    }
+
+    /* Rows span the full grid and re-declare its 12 columns. */
+    .case__row {
+      grid-column: 1 / -1;
+      align-items: baseline;
+    }
+
+    .case__marker {
+      grid-column: 1 / span 3;
+      gap: 1.25rem;
+    }
+
+    .case__marker :global(.case__rule) {
+      max-width: 12rem;
+    }
+
+    .case__body {
+      grid-column: 5 / -1;
+    }
+  }
+</style>

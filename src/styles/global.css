@@ -1,0 +1,488 @@
+@import "tailwindcss" source(none);
+
+/*
+ * Typography — brandbook FINAL · Typography
+ * "One clear sans voice, set with restraint."
+ * Noto Sans in two weights only, exactly as the book sets it:
+ *   Bold 700    — headlines, the KN mark, anchor words, labels
+ *   Regular 400 — everything else
+ */
+@import "@fontsource/noto-sans/400.css";
+@import "@fontsource/noto-sans/700.css";
+
+@theme {
+  --color-cream: #FAF6F0;
+  --color-peach: #F4C7A4;
+  --color-lilac: #DACDEB;
+  --color-soft-blue: #C9DCED;
+  --color-amber: #DE7C4B;
+  --color-grey: #6E6E73;
+  --color-white: #FFFFFF;
+  --color-ink: #1D1D1F;
+  --color-blue: #5693BB;
+
+  --font-sans: "Noto Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+/*
+ * Tokens live on :root as the source of truth. Tailwind v4 prunes @theme
+ * tokens it cannot see used, and Astro scoped styles fall outside its scan.
+ */
+:root {
+  color-scheme: light;
+
+  /*
+   * Palette — LOCKED (brandbook FINAL · Colours). Values are sampled from the
+   * PDF itself, not eyeballed.
+   */
+  --color-cream: #FAF6F0;     /* Calm */
+  --color-peach: #F4C7A4;     /* Warm */
+  --color-lilac: #DACDEB;     /* Considered */
+  --color-soft-blue: #C9DCED; /* Clear */
+  --color-amber: #DE7C4B;     /* Energy */
+  --color-grey: #6E6E73;      /* Quiet */
+  --color-white: #FFFFFF;     /* Space */
+  --color-ink: #1D1D1F;       /* the book's type colour */
+  --color-blue: #5693BB;      /* Soft Blue as the book sets it in type — third voice of every triad */
+  --color-line: #E1DED9;      /* hairline edge of the book's swatch cards */
+
+  /*
+   * Text-safe shades. Same hue, lightness lowered only as far as WCAG needs
+   * against the darkest point of the mesh (top-right peach, L = 0.684).
+   * The exact brand colours above stay on rules, marks, fills and decoration.
+   *   grey  #6E6E73 → 3.55:1 worst case → #5E5E62 = 4.5:1 (body, labels)
+   *   amber #DE7C4B → 2.07:1 worst case → #C65A24 = 3.0:1 (large text only)
+   *   blue  #5693BB → 2.34:1 worst case → #437FA7 = 3.0:1 (large text only)
+   * "Large text" = ≥ 24px regular, or ≥ 19px bold.
+   */
+  --color-grey-text: #5E5E62;
+  --color-amber-text: #C65A24;
+  --color-blue-text: #437FA7;
+
+  --color-text: var(--color-ink);
+  --color-quiet: var(--color-grey-text);
+  --color-focus: var(--color-amber-text);
+  /* Neutral 1px separator for list rows (cases, posts, builds, facts).
+     Amber rules stay reserved for the book's accent moments. */
+  --color-hairline: color-mix(in srgb, var(--color-ink) 14%, transparent);
+
+  /* Frosted surface for chrome that floats over the mesh (header, menus). */
+  --surface-frost: color-mix(in srgb, var(--color-cream) 72%, transparent);
+
+  --font-sans: "Noto Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  /*
+   * Scale — "Large headlines with room to breathe. Small, quiet grey labels.
+   * A balanced scale — composed like a magazine, never like a slide deck."
+   * Ratios follow the book: section title ≈ 2.1× body; key thought ≥ title.
+   */
+  --text-label: 0.75rem;                                         /* 12px running labels */
+  --text-small: 0.875rem;                                        /* 14px chrome, meta */
+  --text-body: clamp(1rem, 0.96rem + 0.2vw, 1.125rem);           /* 16 → 18 */
+  --text-lead: clamp(1.1875rem, 1rem + 0.8vw, 1.5rem);           /* 19 → 24 */
+  --text-h3: clamp(1.5rem, 1.25rem + 1vw, 2.125rem);             /* 24 → 34 */
+  --text-h2: clamp(2.25rem, 1.6rem + 2.6vw, 3.75rem);            /* 36 → 60 */
+  --text-statement: clamp(1.875rem, 1.3rem + 2.4vw, 3.5rem);     /* 30 → 56 */
+  --text-display: clamp(2.75rem, 1.6rem + 4.8vw, 5.5rem);        /* 44 → 88 */
+
+  --leading-display: 1.06;
+  --leading-heading: 1.1;
+  --leading-lead: 1.45;
+  --leading-body: 1.6;
+
+  --tracking-heading: -0.012em;
+  --tracking-label: 0.08em;
+
+  /* Layout — the book keeps a ~5% outer margin and splits spreads at ~50%. */
+  --container: 80rem;
+  --reading: 42rem;
+  --gutter: clamp(1.25rem, 5vw, 4.5rem);
+  /* 12-column gap shared by every spread, so columns line up page to page. */
+  --grid-gap: clamp(1.5rem, 0.5rem + 2vw, 2.5rem);
+  --triad-gap: clamp(2rem, 1rem + 3vw, 5rem);
+  --section-y: clamp(4.5rem, 3rem + 5vw, 8.5rem);
+  --header-h: 4.5rem;
+
+  /*
+   * SectionHeading geometry: label line box + gap = where the title starts.
+   * Text set beside a heading uses --heading-offset to start level with it.
+   */
+  --heading-gap: clamp(1rem, 0.75rem + 1vw, 1.75rem);
+  --heading-offset: calc(var(--text-label) * 1.4 + var(--heading-gap));
+
+  --radius-card: 0.75rem;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ─── Base ──────────────────────────────────────────────────────────────── */
+@layer base {
+  html {
+    background-color: var(--color-cream);
+    color: var(--color-text);
+    font-family: var(--font-sans);
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    -webkit-text-size-adjust: 100%;
+    scroll-padding-top: calc(var(--header-h) + 1rem);
+  }
+
+  body {
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    font-size: var(--text-body);
+    line-height: var(--leading-body);
+    overflow-x: clip;
+  }
+
+  /*
+   * The surface — "a pastel mesh gradient … flowing as one continuous
+   * surface". One fixed layer behind every page, the book's own gradient
+   * raster, so sections never cut the page into bands.
+   */
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    height: 100lvh;
+    z-index: -1;
+    pointer-events: none;
+    background: var(--color-cream) url("../assets/brand/mesh.jpg") 72% 50% / cover no-repeat;
+  }
+
+  main {
+    flex: 1 0 auto;
+    padding-top: var(--header-h);
+  }
+
+  main:focus {
+    outline: none;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-weight: 700;
+    line-height: var(--leading-heading);
+    letter-spacing: var(--tracking-heading);
+    text-wrap: balance;
+    color: var(--color-ink);
+  }
+
+  p,
+  blockquote,
+  figure,
+  dl,
+  dd {
+    margin: 0;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  strong,
+  b {
+    font-weight: 700;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  ::selection {
+    background: var(--color-peach);
+    color: var(--color-ink);
+  }
+}
+
+/* ─── Editorial system ──────────────────────────────────────────────────── */
+@layer components {
+  /* Page shell: max width + the book's outer margin. */
+  .shell {
+    width: 100%;
+    max-width: calc(var(--container) + 2 * var(--gutter));
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+  }
+
+  /* One spread = one section. Generous, magazine pacing. */
+  .section {
+    padding-block: var(--section-y);
+  }
+
+  /* "Small, quiet grey labels." — the book's running label (7pt bold caps). */
+  .label {
+    display: block;
+    font-size: var(--text-label);
+    font-weight: 700;
+    line-height: 1.4;
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    color: var(--color-quiet);
+  }
+
+  /* Section title — the book's page title ("Vision", "Mission", "Values"). */
+  .title {
+    font-size: var(--text-h2);
+    line-height: var(--leading-heading);
+  }
+
+  /* Cover line — "Bring out the best in people." */
+  .display {
+    font-size: var(--text-display);
+    line-height: var(--leading-display);
+  }
+
+  /* A key thought set large and bold (Vision's right-hand line). */
+  .statement {
+    font-size: var(--text-statement);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: var(--tracking-heading);
+    color: var(--color-ink);
+    text-wrap: balance;
+  }
+
+  .h3 {
+    font-size: var(--text-h3);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: var(--tracking-heading);
+  }
+
+  /* Ink running text at reading size (Statement, I Believe). */
+  .lead {
+    font-size: var(--text-lead);
+    line-height: var(--leading-lead);
+    color: var(--color-ink);
+  }
+
+  /* Grey supporting copy — the book's quiet voice. */
+  .quiet {
+    color: var(--color-quiet);
+  }
+
+  .body {
+    font-size: var(--text-body);
+    line-height: var(--leading-body);
+  }
+
+  /*
+   * The rule — the book's 1pt hairline with its soft glow. Accent length by
+   * default (≈ a text column); add .rule--full to span the row.
+   * Tone via .tone-amber / .tone-ink / .tone-blue or --rule-color.
+   */
+  .rule {
+    display: block;
+    width: 100%;
+    max-width: 30rem;
+    height: 1px;
+    margin: 0;
+    border: 0;
+    background: var(--rule-color, var(--color-amber));
+    box-shadow: 0 1.5px 4px color-mix(in srgb, var(--rule-color, var(--color-amber)) 45%, transparent);
+  }
+
+  .rule--full {
+    max-width: none;
+  }
+
+  /*
+   * Triad tones — every three-part spread in the book runs amber · ink ·
+   * blue. Text colour uses the text-safe shade (large text only); rules keep
+   * the exact brand colour.
+   */
+  .tone-amber {
+    color: var(--color-amber-text);
+    --rule-color: var(--color-amber);
+  }
+
+  .tone-ink {
+    color: var(--color-ink);
+    --rule-color: var(--color-ink);
+  }
+
+  .tone-blue {
+    color: var(--color-blue-text);
+    --rule-color: var(--color-blue);
+  }
+
+  /* Buttons — restrained, ink on the surface; amber answers the hover. */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.625rem;
+    min-height: 2.875rem;
+    padding: 0.75rem 1.375rem;
+    border: 1px solid var(--color-ink);
+    border-radius: 999px;
+    font-size: 0.9375rem;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: 0.005em;
+    transition:
+      background-color 180ms var(--ease),
+      border-color 180ms var(--ease),
+      color 180ms var(--ease);
+  }
+
+  .btn--primary {
+    background: var(--color-ink);
+    color: var(--color-white);
+  }
+
+  .btn--primary:hover,
+  .btn--primary:focus-visible {
+    background: var(--color-amber);
+    border-color: var(--color-amber);
+    color: var(--color-ink);
+  }
+
+  .btn--ghost {
+    background: transparent;
+    color: var(--color-ink);
+  }
+
+  .btn--ghost:hover,
+  .btn--ghost:focus-visible {
+    background: var(--color-ink);
+    color: var(--color-white);
+  }
+
+  .btn__arrow {
+    display: inline-block;
+    transition: transform 180ms var(--ease);
+  }
+
+  .btn:hover .btn__arrow,
+  .btn:focus-visible .btn__arrow {
+    transform: translateX(3px);
+  }
+
+  /*
+   * Text link with an arrow. Ink text stays readable; an amber hairline
+   * draws in underneath on hover (amber never carries small text).
+   */
+  .link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding-bottom: 0.25rem;
+    font-weight: 700;
+    font-size: 0.9375rem;
+    color: var(--color-ink);
+    background: linear-gradient(var(--color-amber), var(--color-amber)) 0 100% / 0 1px no-repeat;
+    transition: background-size 240ms var(--ease);
+  }
+
+  .link:hover,
+  .link:focus-visible {
+    background-size: 100% 1px;
+  }
+
+  /* Long-form reading (Thinking posts, case narrative). */
+  .prose {
+    max-width: var(--reading);
+    font-size: var(--text-body);
+    line-height: var(--leading-body);
+    color: var(--color-ink);
+  }
+
+  .prose > * + * {
+    margin-top: 1.25em;
+  }
+
+  .prose h2,
+  .prose h3 {
+    margin-top: 2.25em;
+    font-size: var(--text-h3);
+  }
+
+  .prose strong {
+    font-weight: 700;
+  }
+
+  .prose blockquote {
+    margin-block: 2.5rem;
+    font-size: var(--text-lead);
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: var(--tracking-heading);
+    color: var(--color-ink);
+  }
+
+  .prose blockquote::after {
+    content: "";
+    display: block;
+    width: 100%;
+    max-width: 22rem;
+    height: 1px;
+    margin-top: 1.5rem;
+    background: var(--color-amber);
+    box-shadow: 0 1.5px 4px color-mix(in srgb, var(--color-amber) 45%, transparent);
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .skip-link {
+    position: fixed;
+    top: 0.75rem;
+    left: 0.75rem;
+    z-index: 100;
+    padding: 0.75rem 1rem;
+    border-radius: 999px;
+    background: var(--color-ink);
+    color: var(--color-white);
+    font-size: var(--text-small);
+    font-weight: 700;
+    transform: translateY(-160%);
+    transition: transform 160ms var(--ease);
+  }
+
+  .skip-link:focus {
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -1,0 +1,68 @@
+---
+// Header for a long-form page (Thinking post, case): the book's tiny grey
+// running label — here the pillar or category plus reading time — above a
+// large bold title that breaks like a magazine headline.
+type Props = {
+  meta: readonly string[];
+  title: string;
+  id?: string;
+};
+
+const { meta, title, id = 'article-title' } = Astro.props;
+const items = meta.filter((item) => item && item.trim() && item.trim() !== '—');
+
+// Keep hyphenated compounds ("decision-design", "trade-off") on one line so a
+// display-size headline never breaks mid-word.
+const parts = title.split(/(\S+-\S+)/).filter(Boolean);
+---
+
+<header class="article-header">
+  {items.length > 0 && (
+    <p class="label article-header__meta">
+      {items.map((item, index) => (
+        <>
+          {index > 0 && <span class="article-header__dot" aria-hidden="true">·</span>}
+          {index > 0 && <span class="sr-only">, </span>}
+          <span>{item}</span>
+        </>
+      ))}
+    </p>
+  )}
+  <h1 id={id} class="title article-header__title">
+    {parts.map((part) =>
+      /\S-\S/.test(part) ? <span class="article-header__nowrap">{part}</span> : part,
+    )}
+  </h1>
+</header>
+
+<style>
+  .article-header {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1rem, 0.75rem + 1vw, 1.75rem);
+  }
+
+  .article-header__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    column-gap: 0.625rem;
+  }
+
+  /* Below 375px the .title floor (36px) pushes long headlines past six
+     lines (the AI post ran to 7 at 320 and 360), where Chromium stops
+     balancing them. Scaling with the viewport there keeps them at six
+     balanced lines; identical to .title from 375px up. */
+  .article-header__title {
+    max-width: 23ch;
+    font-size: min(var(--text-h2), 9.6vw);
+  }
+
+  /* With the size above, "decision-design" (≈7.6em) fits the column from
+     320px; below that let it break at its hyphen rather than overflow. */
+  @media (min-width: 20rem) {
+    .article-header__nowrap {
+      white-space: nowrap;
+    }
+  }
+</style>

@@ -1,0 +1,209 @@
+---
+import Wordmark from './Wordmark.astro';
+import MobileNavigation from './MobileNavigation.astro';
+import { primaryNav, primaryCta } from '../config/site';
+
+type Props = {
+  currentPath?: string;
+};
+
+const { currentPath = '' } = Astro.props;
+
+const isActive = (href: string) => {
+  if (href === '/') return currentPath === '/';
+  return currentPath === href || currentPath.startsWith(`${href}/`);
+};
+// 'page' only on the page itself; a section link on one of its child pages gets 'true'.
+const currentFor = (href: string) =>
+  currentPath === href ? 'page' : isActive(href) ? 'true' : undefined;
+---
+
+<header class="site-header" data-site-header>
+  <div class="site-header__inner shell">
+    <Wordmark href="/" />
+
+    <nav class="site-header__nav" aria-label="Primary">
+      <ul class="site-header__list">
+        {primaryNav.map((item) => (
+          <li>
+            <a
+              href={item.href}
+              class="site-header__link"
+              aria-current={currentFor(item.href)}
+            >
+              {item.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+      <a
+        href={primaryCta.href}
+        class="site-header__cta"
+        aria-current={isActive(primaryCta.href) ? 'page' : undefined}
+      >
+        {primaryCta.label}
+      </a>
+    </nav>
+
+    <button
+      type="button"
+      class="site-header__toggle"
+      aria-label="Open menu"
+      aria-expanded="false"
+      aria-controls="mobile-navigation"
+      data-mobile-nav-open
+    >
+      <span class="site-header__toggle-bar" aria-hidden="true"></span>
+      <span class="site-header__toggle-bar" aria-hidden="true"></span>
+    </button>
+  </div>
+</header>
+
+<MobileNavigation currentPath={currentPath} />
+
+<style>
+  /*
+   * Chrome floats over the surface — transparent at rest so the mesh (and the
+   * cover portrait) stay one continuous background; frosted once content
+   * starts to pass underneath.
+   */
+  .site-header {
+    position: fixed;
+    inset: 0 0 auto 0;
+    z-index: 40;
+    height: var(--header-h);
+    transition:
+      background-color 240ms var(--ease),
+      box-shadow 240ms var(--ease),
+      backdrop-filter 240ms var(--ease);
+  }
+
+  .site-header[data-scrolled='true'] {
+    background: var(--surface-frost);
+    -webkit-backdrop-filter: blur(16px) saturate(125%);
+    backdrop-filter: blur(16px) saturate(125%);
+    box-shadow: 0 1px 0 color-mix(in srgb, var(--color-line) 80%, transparent);
+  }
+
+  .site-header__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    height: 100%;
+  }
+
+  .site-header__nav {
+    display: none;
+    align-items: center;
+    gap: 2.25rem;
+  }
+
+  .site-header__list {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .site-header__link {
+    display: inline-block;
+    padding-block: 0.375rem;
+    font-size: var(--text-small);
+    color: var(--color-ink);
+    background: linear-gradient(var(--color-amber), var(--color-amber)) 0 100% / 0 1px no-repeat;
+    transition: background-size 240ms var(--ease);
+  }
+
+  .site-header__link:hover,
+  .site-header__link:focus-visible,
+  .site-header__link[aria-current] {
+    background-size: 100% 1px;
+  }
+
+  .site-header__link[aria-current] {
+    font-weight: 700;
+  }
+
+  .site-header__cta {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.5rem;
+    padding: 0.5rem 1.125rem;
+    border: 1px solid var(--color-ink);
+    border-radius: 999px;
+    font-size: var(--text-small);
+    font-weight: 700;
+    color: var(--color-ink);
+    transition:
+      background-color 180ms var(--ease),
+      color 180ms var(--ease);
+  }
+
+  .site-header__cta:hover,
+  .site-header__cta:focus-visible,
+  .site-header__cta[aria-current='page'] {
+    background: var(--color-ink);
+    color: var(--color-white);
+  }
+
+  .site-header__toggle {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: 2.75rem;
+    height: 2.75rem;
+    margin-right: -0.625rem;
+    padding: 0;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--color-ink);
+    cursor: pointer;
+  }
+
+  .site-header__toggle-bar {
+    display: block;
+    width: 1.25rem;
+    height: 1.5px;
+    border-radius: 2px;
+    background: currentColor;
+  }
+
+  @media (min-width: 52rem) {
+    .site-header__nav {
+      display: flex;
+    }
+
+    .site-header__toggle {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  const header = document.querySelector<HTMLElement>('[data-site-header]');
+
+  if (header) {
+    let ticking = false;
+    const update = () => {
+      const next = window.scrollY > 8 ? 'true' : 'false';
+      if (header.dataset.scrolled !== next) header.dataset.scrolled = next;
+      ticking = false;
+    };
+    update();
+    window.addEventListener(
+      'scroll',
+      () => {
+        if (ticking) return;
+        ticking = true;
+        window.requestAnimationFrame(update);
+      },
+      { passive: true },
+    );
+  }
+</script>

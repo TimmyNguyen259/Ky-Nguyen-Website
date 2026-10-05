@@ -1,0 +1,96 @@
+---
+// One post on the Thinking index, set as an editorial row: quiet meta, the
+// bold title, then the grey tension line. The whole row is the hit area; the
+// title carries the link name. Drafts (dev only) are muted and not linked.
+import DraftBadge from './DraftBadge.astro';
+
+type Props = {
+  href: string;
+  title: string;
+  tension: string;
+  readingTime?: string;
+  draft?: boolean;
+};
+
+const { href, title, tension, readingTime, draft = false } = Astro.props;
+---
+
+<article class:list={['post-row', { 'post-row--draft': draft }]}>
+  <p class="post-row__meta">
+    {readingTime && <span class="label">{readingTime}</span>}
+    {draft && <DraftBadge />}
+  </p>
+  <h3 class="post-row__title h3">
+    {draft ? (
+      <span>{title}</span>
+    ) : (
+      <a href={href} class="post-row__link"><span class="post-row__text">{title}</span></a>
+    )}
+  </h3>
+  <p class="post-row__tension quiet">{tension}</p>
+</article>
+
+<style>
+  .post-row {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.75rem, 0.5rem + 0.6vw, 1rem);
+    padding-block: clamp(1.75rem, 1.1rem + 2vw, 2.75rem);
+  }
+
+  /* Baseline, not centre: the reading-time label then starts at the row's
+     top edge and shares a line with the pillar label beside it. The min-height
+     only reserves room for the Draft badge. */
+  .post-row__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.5rem 0.875rem;
+    min-height: 1.5rem;
+  }
+
+  .post-row__title {
+    max-width: 30ch;
+  }
+
+  /* Stretch the title link over the whole row. */
+  .post-row__link::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+
+  .post-row__link:focus-visible {
+    outline: none;
+  }
+
+  .post-row:has(.post-row__link:focus-visible) {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 4px;
+    border-radius: 2px;
+  }
+
+  /* The amber hairline draws in under the title — the site's link gesture. */
+  .post-row__text {
+    padding-bottom: 0.08em;
+    background: linear-gradient(var(--color-amber), var(--color-amber)) 0 100% / 0 1px no-repeat;
+    transition: background-size 240ms var(--ease);
+  }
+
+  .post-row:hover .post-row__text,
+  .post-row__link:focus-visible .post-row__text {
+    background-size: 100% 1px;
+  }
+
+  .post-row__tension {
+    max-width: 40rem;
+    font-size: var(--text-body);
+    line-height: var(--leading-body);
+  }
+
+  /* Draft: grey instead of ink — muted without dropping below contrast. */
+  .post-row--draft .post-row__title {
+    color: var(--color-quiet);
+  }
+</style>

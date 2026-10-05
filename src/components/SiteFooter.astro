@@ -1,0 +1,189 @@
+---
+// Composed after the book's closing page: the name in bold caps on the left,
+// the cover line on the right resting on an amber rule.
+import { primaryNav, primaryCta, secondaryNav, site } from '../config/site';
+
+type Props = {
+  showEthos?: boolean;
+};
+
+const { showEthos = true } = Astro.props;
+const year = new Date().getFullYear();
+
+const elsewhere = [
+  site.linkedin && { label: 'LinkedIn', href: site.linkedin, external: true },
+  site.github && { label: 'GitHub', href: site.github, external: true },
+  site.email && { label: site.email, href: `mailto:${site.email}`, external: false },
+].filter(Boolean) as { label: string; href: string; external: boolean }[];
+---
+
+<footer class="site-footer">
+  <div class="shell">
+    <div class="site-footer__closing">
+      <div class="site-footer__signature">
+        {showEthos && <p class="site-footer__ethos quiet">{site.ethos}</p>}
+        <p class="site-footer__name">{site.name}</p>
+      </div>
+      <div class="site-footer__line">
+        <p class="site-footer__tagline">{site.tagline}</p>
+        <span class="rule" aria-hidden="true"></span>
+      </div>
+    </div>
+
+    <div class="site-footer__grid">
+      <nav aria-label="Footer">
+        <p class="label">Explore</p>
+        <ul class="site-footer__list">
+          {primaryNav.map((item) => (
+            <li><a href={item.href} class="site-footer__link">{item.label}</a></li>
+          ))}
+          <li><a href={primaryCta.href} class="site-footer__link">{primaryCta.label}</a></li>
+        </ul>
+      </nav>
+
+      {elsewhere.length > 0 && (
+        <div>
+          <p class="label">Elsewhere</p>
+          <ul class="site-footer__list">
+            {elsewhere.map((item) => (
+              <li>
+                <a
+                  href={item.href}
+                  class="site-footer__link"
+                  {...(item.external ? { target: '_blank', rel: 'noreferrer noopener' } : {})}
+                >
+                  {item.label}
+                  {item.external && <span aria-hidden="true"> ↗</span>}
+                  {item.external && <span class="sr-only"> (opens in a new tab)</span>}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
+
+    <div class="site-footer__meta">
+      <p>&copy; {year} {site.name}</p>
+      <ul class="site-footer__meta-list">
+        {secondaryNav.map((item) => (
+          <li><a href={item.href} class="site-footer__link">{item.label}</a></li>
+        ))}
+        <li><a href="#top" class="site-footer__link">Back to top <span aria-hidden="true">↑</span></a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    padding-block: clamp(5rem, 4rem + 5vw, 8rem) 2rem;
+  }
+
+  .site-footer__closing {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+
+  .site-footer__signature {
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+  }
+
+  .site-footer__ethos {
+    max-width: 22rem;
+    font-size: var(--text-lead);
+    line-height: var(--leading-lead);
+  }
+
+  .site-footer__name {
+    font-size: var(--text-body);
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--color-ink);
+  }
+
+  .site-footer__line {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+  }
+
+  .site-footer__tagline {
+    font-size: var(--text-h3);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: var(--tracking-heading);
+    color: var(--color-ink);
+  }
+
+  .site-footer__line .rule {
+    max-width: 36rem;
+  }
+
+  .site-footer__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2.5rem;
+    margin-top: clamp(4rem, 3rem + 4vw, 6.5rem);
+  }
+
+  .site-footer__list,
+  .site-footer__meta-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    margin: 0.875rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .site-footer__link {
+    display: inline-block;
+    padding-block: 0.3rem;
+    font-size: var(--text-small);
+    color: var(--color-ink);
+    background: linear-gradient(var(--color-amber), var(--color-amber)) 0 100% / 0 1px no-repeat;
+    transition: background-size 240ms var(--ease);
+  }
+
+  .site-footer__link:hover,
+  .site-footer__link:focus-visible {
+    background-size: 100% 1px;
+  }
+
+  .site-footer__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem 2rem;
+    margin-top: 3.5rem;
+    font-size: var(--text-small);
+    color: var(--color-quiet);
+  }
+
+  .site-footer__meta-list {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.25rem 1.75rem;
+    margin: 0;
+  }
+
+  @media (min-width: 48rem) {
+    .site-footer__closing {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 4rem;
+      align-items: end;
+    }
+
+    .site-footer__grid {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      width: 50%;
+      margin-left: auto;
+    }
+  }
+</style>

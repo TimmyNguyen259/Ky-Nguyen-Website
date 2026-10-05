@@ -1,0 +1,100 @@
+---
+// After an article: the way back to the index, and — when another published
+// piece exists — a quiet pointer to the next one. Sits on a neutral hairline.
+type Props = {
+  label: string;
+  back: { href: string; label: string };
+  next?: { href: string; title: string };
+  /** Draw the neutral hairline above (off when an amber rule sits just before). */
+  rule?: boolean;
+};
+
+const { label, back, next, rule = true } = Astro.props;
+---
+
+<nav class:list={['article-nav', { 'article-nav--ruled': rule }]} aria-label={label}>
+  <a href={back.href} class="link article-nav__back">
+    <span aria-hidden="true">←</span>
+    {back.label}
+  </a>
+
+  {next && (
+    <a href={next.href} class="article-nav__next">
+      <span class="label">Next</span>
+      <span class="article-nav__next-title">
+        <span class="article-nav__next-text">{next.title}</span>&nbsp;<span class="article-nav__arrow" aria-hidden="true">→</span>
+      </span>
+    </a>
+  )}
+</nav>
+
+<style>
+  .article-nav {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2.25rem;
+  }
+
+  .article-nav--ruled {
+    padding-top: clamp(2rem, 1.5rem + 1.5vw, 2.75rem);
+    border-top: 1px solid var(--color-hairline);
+  }
+
+  .article-nav__back {
+    min-height: 1.75rem;
+  }
+
+  .article-nav__next {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    max-width: 30rem;
+  }
+
+  .article-nav__next-title {
+    font-size: var(--text-body);
+    line-height: 1.45;
+    color: var(--color-quiet);
+    transition: color 180ms var(--ease);
+  }
+
+  .article-nav__next-text {
+    background: linear-gradient(var(--color-amber), var(--color-amber)) 0 100% / 0 1px no-repeat;
+    transition: background-size 240ms var(--ease);
+  }
+
+  .article-nav__arrow {
+    display: inline-block;
+    transition: transform 180ms var(--ease);
+  }
+
+  .article-nav__next:hover .article-nav__next-title,
+  .article-nav__next:focus-visible .article-nav__next-title {
+    color: var(--color-ink);
+  }
+
+  .article-nav__next:hover .article-nav__next-text,
+  .article-nav__next:focus-visible .article-nav__next-text {
+    background-size: 100% 1px;
+  }
+
+  .article-nav__next:hover .article-nav__arrow,
+  .article-nav__next:focus-visible .article-nav__arrow {
+    transform: translateX(3px);
+  }
+
+  @media (min-width: 48rem) {
+    .article-nav {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 3rem;
+    }
+
+    .article-nav__next {
+      align-items: flex-end;
+      text-align: right;
+    }
+  }
+</style>

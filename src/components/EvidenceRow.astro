@@ -1,0 +1,59 @@
+---
+// One editorial fact row: the bold value set at h3 size, the quiet context
+// beside it, rows divided by the neutral 1px hairline (amber rules stay
+// reserved for the book's accent moments). Two columns from tablet up, the
+// context starting on the spread's centre line like the book's right column.
+type Props = {
+  value: string;
+  context: string;
+  /** Render as a list item when the rows sit inside a <ul>/<ol>. */
+  as?: 'div' | 'li';
+};
+
+const { value, context, as = 'div' } = Astro.props;
+const Tag = as;
+---
+
+<Tag class="evidence-row">
+  <p class="evidence-row__value">{value}</p>
+  <p class="evidence-row__context">{context}</p>
+</Tag>
+
+<style>
+  .evidence-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.375rem;
+    padding-block: 1.375rem 1.5rem;
+    border-top: 1px solid var(--color-hairline);
+    align-items: baseline;
+  }
+
+  .evidence-row:last-child {
+    border-bottom: 1px solid var(--color-hairline);
+  }
+
+  .evidence-row__value {
+    font-size: var(--text-h3);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: var(--tracking-heading);
+    color: var(--color-ink);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .evidence-row__context {
+    max-width: 38rem;
+    font-size: var(--text-body);
+    line-height: 1.5;
+    color: var(--color-quiet);
+  }
+
+  @media (min-width: 48rem) {
+    .evidence-row {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      column-gap: var(--grid-gap);
+      padding-block: 1.625rem 1.75rem;
+    }
+  }
+</style>

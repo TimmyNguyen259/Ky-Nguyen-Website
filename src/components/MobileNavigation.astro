@@ -1,0 +1,292 @@
+---
+import Wordmark from './Wordmark.astro';
+import { primaryNav, primaryCta, site } from '../config/site';
+import mesh from '../assets/brand/mesh.jpg';
+
+type Props = {
+  currentPath?: string;
+};
+
+const { currentPath = '' } = Astro.props;
+
+const isActive = (href: string) => {
+  if (href === '/') return currentPath === '/';
+  return currentPath === href || currentPath.startsWith(`${href}/`);
+};
+// 'page' only on the page itself; a section link on one of its child pages gets 'true'.
+const currentFor = (href: string) =>
+  currentPath === href ? 'page' : isActive(href) ? 'true' : undefined;
+---
+
+<div
+  id="mobile-navigation"
+  class="mobile-nav"
+  data-mobile-nav
+  role="dialog"
+  aria-modal="true"
+  aria-label="Menu"
+  hidden
+  style={`--mesh: url(${mesh.src})`}
+>
+  <div class="mobile-nav__inner shell">
+    <div class="mobile-nav__topbar">
+      <Wordmark href="/" />
+      <button
+        type="button"
+        class="mobile-nav__close"
+        aria-label="Close menu"
+        data-mobile-nav-close
+      >
+        <span aria-hidden="true" class="mobile-nav__close-x"></span>
+      </button>
+    </div>
+
+    <nav aria-label="Mobile primary">
+      <ul class="mobile-nav__list">
+        {primaryNav.map((item) => (
+          <li>
+            <a
+              href={item.href}
+              class="mobile-nav__link"
+              aria-current={currentFor(item.href)}
+              data-mobile-nav-link
+            >
+              {item.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+      <a
+        href={primaryCta.href}
+        class="btn btn--primary mobile-nav__cta"
+        aria-current={currentFor(primaryCta.href)}
+        data-mobile-nav-link
+      >
+        {primaryCta.label}
+        <span class="btn__arrow" aria-hidden="true">→</span>
+      </a>
+    </nav>
+
+    <div class="mobile-nav__footer">
+      <p class="mobile-nav__tagline">{site.tagline}</p>
+      <span class="rule" aria-hidden="true"></span>
+      {site.linkedin && (
+        <a
+          href={site.linkedin}
+          target="_blank"
+          rel="noreferrer noopener"
+          class="link"
+          data-mobile-nav-link
+        >
+          LinkedIn <span aria-hidden="true">↗</span>
+          <span class="sr-only"> (opens in a new tab)</span>
+        </a>
+      )}
+    </div>
+  </div>
+</div>
+
+<style>
+  .mobile-nav {
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    background: var(--color-cream) var(--mesh) 72% 50% / cover no-repeat;
+    color: var(--color-ink);
+    opacity: 0;
+    transition: opacity 220ms var(--ease);
+  }
+
+  .mobile-nav[data-open='true'] {
+    opacity: 1;
+  }
+
+  .mobile-nav__inner {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+    min-height: 100dvh;
+    padding-bottom: 2.5rem;
+  }
+
+  .mobile-nav__topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: var(--header-h);
+  }
+
+  .mobile-nav__close {
+    position: relative;
+    width: 2.75rem;
+    height: 2.75rem;
+    margin-right: -0.625rem;
+    padding: 0;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--color-ink);
+    cursor: pointer;
+  }
+
+  .mobile-nav__close-x::before,
+  .mobile-nav__close-x::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 1.25rem;
+    height: 1.5px;
+    border-radius: 2px;
+    background: currentColor;
+  }
+
+  .mobile-nav__close-x::before {
+    transform: translate(-50%, -50%) rotate(45deg);
+  }
+
+  .mobile-nav__close-x::after {
+    transform: translate(-50%, -50%) rotate(-45deg);
+  }
+
+  .mobile-nav__list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .mobile-nav__link {
+    display: inline-block;
+    padding-block: 0.25rem;
+    font-size: clamp(2.25rem, 1.6rem + 3.5vw, 3rem);
+    font-weight: 700;
+    line-height: 1.12;
+    letter-spacing: var(--tracking-heading);
+    color: var(--color-ink);
+  }
+
+  .mobile-nav__link[aria-current] {
+    color: var(--color-amber-text);
+  }
+
+  .mobile-nav__cta {
+    margin-top: 2rem;
+  }
+
+  .mobile-nav__footer {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.25rem;
+    margin-top: auto;
+  }
+
+  .mobile-nav__tagline {
+    font-size: var(--text-lead);
+    font-weight: 700;
+    line-height: 1.25;
+  }
+
+  html[data-menu-open='true'] {
+    overflow: hidden;
+  }
+
+  @media (min-width: 52rem) {
+    .mobile-nav {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  const FOCUSABLE_SELECTOR =
+    'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+  const nav = document.querySelector<HTMLElement>('[data-mobile-nav]');
+  const openers = document.querySelectorAll<HTMLElement>('[data-mobile-nav-open]');
+  const closers = document.querySelectorAll<HTMLElement>('[data-mobile-nav-close]');
+  const links = nav?.querySelectorAll<HTMLElement>('[data-mobile-nav-link]');
+
+  let lastFocused: HTMLElement | null = null;
+
+  // Everything behind the open dialog is taken out of focus and the a11y tree.
+  const background = () =>
+    ['main', 'footer.site-footer', '[data-site-header]', '.skip-link']
+      .map((s) => document.querySelector<HTMLElement>(s))
+      .filter((el): el is HTMLElement => el !== null);
+
+  function open() {
+    if (!nav) return;
+    lastFocused = document.activeElement as HTMLElement | null;
+    nav.hidden = false;
+    background().forEach((el) => (el.inert = true));
+    void nav.offsetWidth;
+    nav.setAttribute('data-open', 'true');
+    document.documentElement.setAttribute('data-menu-open', 'true');
+    openers.forEach((o) => o.setAttribute('aria-expanded', 'true'));
+
+    const closeButton = nav.querySelector<HTMLElement>('[data-mobile-nav-close]');
+    closeButton?.focus();
+  }
+
+  function close() {
+    if (!nav || nav.hidden) return;
+    nav.removeAttribute('data-open');
+    document.documentElement.removeAttribute('data-menu-open');
+    openers.forEach((o) => o.setAttribute('aria-expanded', 'false'));
+    // Lift inert before refocusing — an inert element can't take focus.
+    background().forEach((el) => (el.inert = false));
+
+    window.setTimeout(() => {
+      if (!nav.hasAttribute('data-open')) nav.hidden = true;
+    }, 240);
+
+    lastFocused?.focus();
+  }
+
+  function onKeydown(event: KeyboardEvent) {
+    if (!nav || nav.hidden) return;
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      close();
+      return;
+    }
+    if (event.key !== 'Tab') return;
+
+    const focusables = Array.from(nav.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR));
+    if (focusables.length === 0) return;
+
+    const first = focusables[0];
+    const last = focusables[focusables.length - 1];
+    const active = document.activeElement as HTMLElement | null;
+
+    if (event.shiftKey && active === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && active === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  }
+
+  // Close if the viewport grows past the mobile breakpoint while open.
+  const desktop = window.matchMedia('(min-width: 52rem)');
+  desktop.addEventListener('change', (e) => {
+    if (!e.matches) return;
+    close();
+    // The toggle is hidden on desktop, so focus would fall to <body>.
+    if (!lastFocused || lastFocused.getClientRects().length === 0) {
+      document.querySelector<HTMLElement>('[data-site-header] .wordmark')?.focus();
+    }
+  });
+
+  openers.forEach((btn) => btn.addEventListener('click', open));
+  closers.forEach((btn) => btn.addEventListener('click', close));
+  links?.forEach((link) => link.addEventListener('click', close));
+  document.addEventListener('keydown', onKeydown);
+</script>

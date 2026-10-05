@@ -1,0 +1,78 @@
+---
+// Opening spread for the writing indexes (Thinking, Cases). Composed after
+// the book's chapter openers (Brand Platform, Core Elements): the tiny label
+// and big title top-left, then the quiet paragraph stepping down into the
+// right half, resting on a short amber rule — the book's diagonal read.
+import SectionHeading from '../SectionHeading.astro';
+import Rule from '../Rule.astro';
+
+type Props = {
+  label: string;
+  title: string;
+  intro: string;
+  id?: string;
+};
+
+const { label, title, intro, id = 'page-title' } = Astro.props;
+---
+
+<section class="opening" aria-labelledby={id}>
+  <div class="shell opening__grid">
+    <div class="opening__heading">
+      <SectionHeading as="h1" label={label} title={title} id={id} />
+    </div>
+    <div class="opening__aside">
+      <p class="lead quiet opening__intro">{intro}</p>
+      <Rule tone="amber" class="opening__rule" />
+    </div>
+  </div>
+</section>
+
+<style>
+  .opening {
+    padding-block: clamp(3rem, 1.5rem + 5vw, 7rem) clamp(3.5rem, 2rem + 4vw, 6.5rem);
+  }
+
+  .opening__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: clamp(2rem, 1.25rem + 2.5vw, 3rem);
+  }
+
+  .opening__aside {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1.75rem, 1rem + 2vw, 3rem);
+    max-width: 34rem;
+  }
+
+  .opening__intro {
+    max-width: 30rem;
+  }
+
+  .opening__aside :global(.opening__rule) {
+    max-width: 22rem;
+  }
+
+  @media (min-width: 64rem) {
+    .opening__grid {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: var(--grid-gap);
+      row-gap: 0;
+    }
+
+    .opening__heading {
+      grid-column: 1 / span 8;
+    }
+
+    /* Steps down into the right half, as the book's paragraph does. */
+    .opening__aside {
+      grid-column: 7 / -1;
+      margin-top: 0.75rem;
+    }
+
+    .opening__aside :global(.opening__rule) {
+      max-width: 26rem;
+    }
+  }
+</style>

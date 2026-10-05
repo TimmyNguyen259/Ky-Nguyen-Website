@@ -1,0 +1,16 @@
+---
+// The book's hairline: 1pt, with a soft glow beneath. Decorative only.
+// Accent length by default; `full` spans the row (Values).
+type Props = {
+  tone?: 'amber' | 'ink' | 'blue';
+  full?: boolean;
+  class?: string;
+};
+
+const { tone = 'amber', full = false, class: className = '' } = Astro.props;
+---
+
+<span
+  class={`rule tone-${tone} ${full ? 'rule--full' : ''} ${className}`.replace(/\s+/g, ' ').trim()}
+  aria-hidden="true"
+></span>

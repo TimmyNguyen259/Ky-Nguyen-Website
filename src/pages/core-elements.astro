@@ -1,0 +1,150 @@
+---
+// /core-elements — the Core Elements chapter of the brandbook (pp. 11–13):
+// the chapter opener, the locked palette as swatch cards, and the
+// Typography · The Mark · The Portrait triad with restrained specimens.
+import Base from '../layouts/Base.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import Triad from '../components/Triad.astro';
+import ChapterOpener from '../components/core/ChapterOpener.astro';
+import Swatch from '../components/core/Swatch.astro';
+import Specimens from '../components/core/Specimens.astro';
+import { opening, colours, elements } from '../content/core-elements';
+import { tieDashes } from '../utils/typography';
+---
+
+<Base title="Core elements" description={opening.body}>
+  {/* 1 · Core Elements — book p. 11 */}
+  <ChapterOpener
+    id="core-title"
+    label={opening.label}
+    title={opening.title}
+    lines={[opening.body]}
+  />
+
+  {/* 2 · Colours — book p. 12 */}
+  <section class="section" aria-labelledby="colours-title">
+    <div class="shell colours">
+      <div class="colours__intro">
+        <SectionHeading id="colours-title" label={colours.label} title={colours.title} />
+        <p class="quiet colours__description">{tieDashes(colours.description)}</p>
+      </div>
+
+      <ul class="colours__swatches" role="list" aria-label="The palette">
+        {colours.swatches.map((swatch) => <Swatch {...swatch} />)}
+      </ul>
+
+      <p class="colours__locked">
+        {colours.locked.map((line, index) => (
+          <Fragment>
+            <span class="colours__line">{line}</span>{index < colours.locked.length - 1 && ' '}
+          </Fragment>
+        ))}
+      </p>
+    </div>
+  </section>
+
+  {/* 3 · Typography · The Mark · The Portrait — book p. 13 */}
+  <section class="section elements" aria-label="Typography, the mark and the portrait">
+    <div class="shell">
+      <Triad items={elements} headingLevel="h2" />
+      <div class="elements__specimens">
+        <Specimens />
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  /* ─── Colours ────────────────────────────────────────────────────────── */
+  .colours {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: clamp(2.5rem, 2rem + 2vw, 3.5rem);
+  }
+
+  .colours__intro {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1.75rem, 1.25rem + 2vw, 3rem);
+  }
+
+  .colours__description {
+    max-width: 30rem;
+    font-size: var(--text-body);
+    line-height: var(--leading-body);
+  }
+
+  .colours__swatches {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: clamp(0.875rem, 0.5rem + 1.25vw, 2.25rem) clamp(0.875rem, 0.5rem + 1.5vw, 2.5rem);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  /*
+   * "The palette is locked. …" — bold, ink. On phones one flowing paragraph
+   * (the third line is wider than the screen); from 40rem the book's four
+   * lines hold.
+   */
+  .colours__locked {
+    max-width: 30rem;
+    font-size: var(--text-body);
+    font-weight: 700;
+    line-height: 1.45;
+    color: var(--color-ink);
+    text-wrap: pretty;
+  }
+
+  @media (min-width: 22.5rem) {
+    .colours__swatches {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 40rem) {
+    .colours__line {
+      display: block;
+    }
+  }
+
+  /*
+   * Desktop: words on the left (title, description; the locked lines low,
+   * level with the last swatch row), the cards in the right half —
+   * top-aligned with the title as on p. 12.
+   */
+  @media (min-width: 64rem) {
+    .colours {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      grid-template-rows: auto 1fr;
+      column-gap: var(--grid-gap);
+    }
+
+    .colours__intro {
+      grid-column: 1 / span 5;
+      grid-row: 1;
+    }
+
+    .colours__swatches {
+      grid-column: 7 / span 6;
+      grid-row: 1 / span 2;
+      align-self: start;
+      /* Label line + gap (--heading-offset, global.css): the first cards sit level with the title. */
+      padding-top: var(--heading-offset);
+    }
+
+    .colours__locked {
+      grid-column: 1 / span 5;
+      grid-row: 2;
+      align-self: end;
+    }
+  }
+
+  /* ─── Typography · The Mark · The Portrait ───────────────────────────── */
+  /* Clearly more than the Triad's own item gap, so on phones the samples
+     read as their own row rather than part of The Portrait. */
+  .elements__specimens {
+    margin-top: clamp(5rem, 3.5rem + 5vw, 7rem);
+  }
+</style>

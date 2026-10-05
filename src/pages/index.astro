@@ -1,0 +1,214 @@
+---
+// Home — composed from the brandbook FINAL spreads, in order:
+// Cover (p.1) · Statement (p.3) · Vision (p.4) · Mission (p.7), then a
+// web-only bridge into the work voiced with the book's closing lines.
+// The book's closing composition itself lives in the site footer.
+import Base from '../layouts/Base.astro';
+import CoverHero from '../components/home/CoverHero.astro';
+import WorkIndex, { type WorkRow } from '../components/home/WorkIndex.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import Triad from '../components/Triad.astro';
+import { site, primaryCta } from '../config/site';
+import { statement, vision, mission, work } from '../content/home';
+import { caseIndex } from '../content/cases';
+import { publishedPosts } from '../content/thinking';
+import { buildsPage, builds } from '../content/builds';
+import { tieDashes } from '../utils/typography';
+
+// Only published work reaches the home page — drafts never surface here,
+// in development or in production.
+const firstCase = caseIndex.find((item) => item.status === 'published');
+const firstPost = publishedPosts[0];
+
+const rows: WorkRow[] = [];
+
+if (firstCase) {
+  rows.push({
+    label: work.rows.cases.label,
+    title: firstCase.title,
+    line: firstCase.tension,
+    href: `/cases/${firstCase.slug}`,
+    linkLabel: work.rows.cases.link,
+  });
+}
+
+if (firstPost) {
+  rows.push({
+    label: work.rows.thinking.label,
+    title: firstPost.title,
+    line: firstPost.tension,
+    href: `/thinking/${firstPost.slug}`,
+    linkLabel: work.rows.thinking.link,
+  });
+}
+
+if (builds.length > 0) {
+  rows.push({
+    label: work.rows.builds.label,
+    title: buildsPage.title,
+    // Comma-joined: one build name ("SSC · HRBP · COE model") already
+    // carries middle dots, so a dot join would read as five builds.
+    line: builds.map((build) => build.name).join(', '),
+    href: '/builds',
+    linkLabel: work.rows.builds.link,
+  });
+}
+---
+
+<Base underHeader>
+  <CoverHero />
+
+  {/* Statement — book p.3: the paragraph set in from the left edge. */}
+  <section class="section home-statement" aria-labelledby="statement-title">
+    <div class="shell">
+      <SectionHeading label={statement.label} title={statement.title} id="statement-title" />
+      <div class="home-grid">
+        <p class="lead home-statement__text">{tieDashes(site.statement)}</p>
+      </div>
+    </div>
+  </section>
+
+  {/* Vision — book p.4: quiet paragraph left, the key thought right and lower. */}
+  <section class="section home-vision" aria-labelledby="vision-title">
+    <div class="shell">
+      <SectionHeading label={vision.label} title={vision.title} id="vision-title" />
+      <div class="home-grid home-vision__spread">
+        <p class="quiet body home-vision__body">{tieDashes(vision.body)}</p>
+        <p class="statement home-vision__thought">{vision.keyThought}</p>
+      </div>
+    </div>
+  </section>
+
+  {/* Mission — book p.7: three coloured titles, each on its own rule. */}
+  <section class="section home-mission" aria-labelledby="mission-title">
+    <div class="shell">
+      <SectionHeading label={mission.label} title={mission.title} id="mission-title" />
+      <div class="home-mission__triad">
+        <Triad items={mission.items} />
+      </div>
+    </div>
+  </section>
+
+  {/* Work — the book's closing lines as the bridge into the work. */}
+  <section class="section home-work" aria-labelledby="work-title">
+    <div class="shell">
+      <SectionHeading label={work.label} title={work.title} id="work-title" />
+      <p class="lead quiet home-work__lead">{work.lead}</p>
+
+      {rows.length > 0 && (
+        <div class="home-work__index">
+          <WorkIndex rows={rows} />
+        </div>
+      )}
+
+      <div class="home-grid home-work__cta">
+        <a class="btn btn--primary" href={primaryCta.href}>
+          {primaryCta.label} <span class="btn__arrow" aria-hidden="true">→</span>
+        </a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  /* The book's 12-column spread, used from desktop up. */
+  .home-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  @media (min-width: 48rem) {
+    .home-grid {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: var(--grid-gap);
+    }
+  }
+
+  /* ─── Statement ──────────────────────────────────────────────────── */
+  .home-statement__text {
+    max-width: 40rem;
+    margin-top: clamp(2.5rem, 1rem + 5vw, 6rem);
+  }
+
+  @media (min-width: 48rem) {
+    .home-statement__text {
+      grid-column: 3 / -1;
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .home-statement__text {
+      grid-column: 4 / 11;
+    }
+  }
+
+  /* ─── Vision ─────────────────────────────────────────────────────── */
+  .home-vision__spread {
+    row-gap: 2.5rem;
+    margin-top: clamp(2.5rem, 1rem + 5vw, 6rem);
+  }
+
+  .home-vision__body {
+    max-width: 26rem;
+  }
+
+  .home-vision__thought {
+    max-width: 12em;
+  }
+
+  @media (min-width: 48rem) {
+    .home-vision__body {
+      grid-column: 1 / 8;
+    }
+
+    .home-vision__thought {
+      grid-column: 3 / -1;
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .home-vision__body {
+      grid-column: 1 / 6;
+    }
+
+    /* The book sets the key thought at ≈ 47% of the page, a little lower
+       than the paragraph: column 6 plus half a column. */
+    .home-vision__thought {
+      grid-column: 6 / -1;
+      margin-top: clamp(3rem, 1rem + 3.5vw, 5rem);
+      margin-left: clamp(1rem, 4vw, 4.5rem);
+      /* Greedy wrap keeps the book's break:
+         "People growth and / business growth should / move together." */
+      text-wrap: wrap;
+    }
+  }
+
+  /* ─── Mission ────────────────────────────────────────────────────── */
+  .home-mission__triad {
+    margin-top: clamp(3rem, 1rem + 8vw, 10rem);
+  }
+
+  /* ─── Work ───────────────────────────────────────────────────────── */
+  .home-work__lead {
+    max-width: 28em;
+    margin-top: clamp(1.25rem, 0.75rem + 1.5vw, 2rem);
+  }
+
+  .home-work__index {
+    margin-top: clamp(3rem, 2rem + 4vw, 6rem);
+  }
+
+  .home-work__cta {
+    margin-top: clamp(2.5rem, 1.5rem + 3vw, 4.5rem);
+  }
+
+  .home-work__cta .btn {
+    justify-self: start;
+  }
+
+  @media (min-width: 48rem) {
+    .home-work__cta .btn {
+      grid-column: 4 / -1;
+    }
+  }
+</style>

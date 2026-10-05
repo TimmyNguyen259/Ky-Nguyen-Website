@@ -1,0 +1,102 @@
+---
+// The book's three-column spread (Mission; Typography · The Mark · The
+// Portrait). Columns always run amber · ink · blue: a coloured bold heading,
+// then its hairline in the same tone, then optional quiet copy.
+import Rule from './Rule.astro';
+
+type Item = {
+  title: string;
+  body?: string | readonly string[];
+};
+
+type Props = {
+  items: readonly Item[];
+  headingLevel?: 'h2' | 'h3';
+  class?: string;
+};
+
+const { items, headingLevel = 'h3', class: className = '' } = Astro.props;
+const tones = ['amber', 'ink', 'blue'] as const;
+const Heading = headingLevel;
+---
+
+<ul class={`triad ${className}`.trim()}>
+  {items.map((item, index) => {
+    const tone = tones[index % tones.length];
+    const lines = item.body ? (Array.isArray(item.body) ? item.body : [item.body]) : [];
+    return (
+      <li class="triad__item">
+        <Heading class={`triad__title h3 tone-${tone}`}>{item.title}</Heading>
+        <Rule tone={tone} class="triad__rule" />
+        {lines.length > 0 && (
+          <div class="triad__body quiet">
+            {lines.map((line) => <p>{line}</p>)}
+          </div>
+        )}
+      </li>
+    );
+  })}
+</ul>
+
+<style>
+  .triad {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 3.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .triad__item {
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+  }
+
+  /* Colour comes from the global .tone-* class (text-safe shade).
+     Greedy wrap in a 10.25em measure breaks the titles as the book does:
+     "Seeing People / Clearly", "Moving the Business / Forward". */
+  .triad__title {
+    max-width: 10.25em;
+    text-wrap: wrap;
+  }
+
+  .triad :global(.triad__rule) {
+    max-width: 22rem;
+  }
+
+  .triad__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    max-width: 24rem;
+    font-size: var(--text-body);
+    line-height: 1.55;
+  }
+
+  @media (min-width: 52rem) {
+    .triad {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-rows: auto auto auto;
+      column-gap: var(--triad-gap);
+    }
+
+    /* Headings share one row so the three rules line up across columns. */
+    .triad__item {
+      display: grid;
+      grid-template-rows: subgrid;
+      grid-row: span 3;
+      row-gap: 0;
+    }
+
+    .triad :global(.triad__rule) {
+      align-self: start;
+      margin-top: clamp(2.5rem, 1.5rem + 3vw, 5.5rem);
+    }
+
+    .triad__body {
+      margin-top: 2.5rem;
+    }
+  }
+</style>

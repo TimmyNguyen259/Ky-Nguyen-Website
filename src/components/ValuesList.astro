@@ -1,0 +1,79 @@
+---
+// Brandbook §Values — amber numeral, bold name, the quiet "X before Y." line,
+// each row closed by a full-width amber hairline.
+import Rule from './Rule.astro';
+
+type Item = {
+  label: string;
+  body: string;
+};
+
+type Props = {
+  items: readonly Item[];
+  class?: string;
+};
+
+const { items, class: className = '' } = Astro.props;
+---
+
+<ol class={`values ${className}`.trim()}>
+  {items.map((item, index) => (
+    <li class="values__row">
+      <div class="values__line">
+        <span class="values__index" aria-hidden="true">{index + 1}.</span>
+        <h3 class="values__label h3">{item.label}</h3>
+        <p class="values__body quiet">{item.body}</p>
+      </div>
+      <Rule tone="amber" full />
+    </li>
+  ))}
+</ol>
+
+<style>
+  .values {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(2rem, 1.5rem + 2vw, 3.25rem);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .values__row {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1.75rem, 1.25rem + 2vw, 3.5rem);
+  }
+
+  .values__line {
+    display: grid;
+    grid-template-columns: 2.5rem minmax(0, 1fr);
+    column-gap: 0.75rem;
+    row-gap: 0.5rem;
+    align-items: baseline;
+  }
+
+  /* Decorative numeral (the list already conveys order) — exact brand amber. */
+  .values__index {
+    font-size: var(--text-body);
+    font-weight: 700;
+    color: var(--color-amber);
+  }
+
+  .values__body {
+    grid-column: 2;
+    font-size: var(--text-lead);
+    line-height: 1.4;
+  }
+
+  @media (min-width: 48rem) {
+    .values__line {
+      grid-template-columns: 4.5rem minmax(0, 0.9fr) minmax(0, 1.1fr);
+      column-gap: 1.5rem;
+    }
+
+    .values__body {
+      grid-column: 3;
+    }
+  }
+</style>

@@ -1,0 +1,73 @@
+---
+// Brandbook §Traits — three columns in the triad tones (amber · ink · blue).
+// Anchor traits are set bold, the rest regular, exactly as on the page.
+// Words are sized as "large text" so the text-safe tones hold contrast.
+// Below 52rem each tone group flows as a wrapped line of words, so 19 words
+// don't become one long column and no word is ever split ("Business-minded").
+type Trait = {
+  word: string;
+  anchor?: boolean;
+};
+
+type Props = {
+  columns: readonly (readonly Trait[])[];
+  class?: string;
+};
+
+const { columns, class: className = '' } = Astro.props;
+const tones = ['amber', 'ink', 'blue'] as const;
+---
+
+<div class={`traits ${className}`.trim()}>
+  {columns.map((column, index) => (
+    <ul class={`traits__col tone-${tones[index % tones.length]}`}>
+      {column.map((trait) => (
+        <li class={`traits__word ${trait.anchor ? 'traits__word--anchor' : ''}`.trim()}>
+          {trait.word}
+        </li>
+      ))}
+    </ul>
+  ))}
+</div>
+
+<style>
+  .traits {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: clamp(1.75rem, 1.25rem + 2vw, 2.5rem);
+  }
+
+  .traits__col {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem 1.25rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .traits__word {
+    font-size: clamp(1.5rem, 1.35rem + 0.5vw, 1.75rem);
+    font-weight: 400;
+    line-height: 1.3;
+    white-space: nowrap;
+  }
+
+  .traits__word--anchor {
+    font-weight: 700;
+  }
+
+  @media (min-width: 52rem) {
+    .traits {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      column-gap: clamp(1.5rem, 1rem + 3vw, 5rem);
+    }
+
+    /* The book's airy columns: one word per line, generous pitch. */
+    .traits__col {
+      flex-direction: column;
+      flex-wrap: nowrap;
+      gap: clamp(0.75rem, 2.2vw, 2.25rem);
+    }
+  }
+</style>

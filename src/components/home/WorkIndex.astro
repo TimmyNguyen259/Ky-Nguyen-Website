@@ -1,0 +1,93 @@
+---
+// Editorial index of the work: one row per shelf (Cases · Thinking ·
+// Builds) — a quiet label, the bold title, one grey line, one link.
+// Rows are separated by the neutral 1px hairline; the amber rule stays
+// reserved for the book's accent moments.
+import { tieDashes } from '../../utils/typography';
+
+export type WorkRow = {
+  label: string;
+  title: string;
+  line: string;
+  href: string;
+  linkLabel: string;
+};
+
+type Props = {
+  rows: readonly WorkRow[];
+};
+
+const { rows } = Astro.props;
+---
+
+<ul class="work-index">
+  {rows.map((row) => (
+    <li class="work-index__row">
+      <p class="label work-index__label">{row.label}</p>
+      <div class="work-index__body">
+        <h3 class="h3 work-index__title">{row.title}</h3>
+        <p class="body quiet work-index__line">{tieDashes(row.line)}</p>
+        <a href={row.href} class="link work-index__link">
+          <span>
+            {row.linkLabel}
+            <span class="sr-only">: {row.title}</span>
+          </span>
+          <span aria-hidden="true">→</span>
+        </a>
+      </div>
+    </li>
+  ))}
+</ul>
+
+<style>
+  .work-index {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-bottom: 1px solid var(--color-hairline);
+  }
+
+  .work-index__row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.25rem;
+    padding-block: clamp(2rem, 1.5rem + 2vw, 3.25rem);
+    border-top: 1px solid var(--color-hairline);
+  }
+
+  .work-index__body {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .work-index__title {
+    max-width: 30ch;
+  }
+
+  .work-index__line {
+    max-width: 38rem;
+  }
+
+  .work-index__link {
+    margin-top: 0.5rem;
+  }
+
+  @media (min-width: 48rem) {
+    .work-index__row {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      column-gap: var(--grid-gap);
+    }
+
+    .work-index__label {
+      grid-column: 1 / 4;
+      /* Sit on the first line of the title. */
+      padding-top: 0.6em;
+    }
+
+    .work-index__body {
+      grid-column: 4 / -1;
+    }
+  }
+</style>

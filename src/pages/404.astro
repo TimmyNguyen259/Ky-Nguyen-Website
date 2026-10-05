@@ -1,0 +1,72 @@
+---
+import Base from '../layouts/Base.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import { primaryCta } from '../config/site';
+---
+
+<Base title="Page not found" noindex>
+  <section class="notfound shell" aria-labelledby="notfound-heading">
+    <SectionHeading as="h1" id="notfound-heading" label="404" title="Page not found." />
+
+    <div class="notfound__body">
+      <p class="lead quiet">The link may be old, or the page may have moved.</p>
+      <ul class="notfound__links">
+        <li>
+          <a href="/" class="link">Back to home <span aria-hidden="true">→</span></a>
+        </li>
+        <li>
+          <a href={primaryCta.href} class="link">{primaryCta.label} <span aria-hidden="true">→</span></a>
+        </li>
+      </ul>
+    </div>
+  </section>
+</Base>
+
+<style>
+  /* Same system as every page: label + title at the margin, the quiet line
+     on the Statement axis (hp03). Calm — nothing to fix, just a way back. */
+  .notfound {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: clamp(2rem, 1.5rem + 2.5vw, 4.5rem);
+    align-content: start;
+    padding-block: clamp(3.5rem, 2.5rem + 4vw, 7rem) clamp(2rem, 1rem + 3vw, 4rem);
+  }
+
+  .notfound__body {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1.75rem, 1.25rem + 1.5vw, 2.5rem);
+    max-width: 38rem;
+  }
+
+  .notfound__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 2.25rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .notfound__links .link {
+    min-height: 2.75rem;
+  }
+
+  @media (min-width: 64rem) {
+    .notfound {
+      /* Hold the spread open on wide screens so the footer doesn't ride up. */
+      min-height: clamp(26rem, calc(66svh - var(--header-h)), 40rem);
+      grid-template-columns: minmax(0, 3fr) minmax(0, 9fr);
+      column-gap: var(--grid-gap);
+    }
+
+    .notfound > :global(.section-heading) {
+      grid-column: 1 / -1;
+    }
+
+    .notfound__body {
+      grid-column: 2;
+    }
+  }
+</style>

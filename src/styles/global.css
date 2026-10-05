@@ -152,7 +152,7 @@
     height: 100lvh;
     z-index: -1;
     pointer-events: none;
-    background: var(--color-cream) url("../assets/brand/mesh.jpg") 72% 50% / cover no-repeat;
+    background: var(--color-cream) url("../assets/brand/mesh.avif") 72% 50% / cover no-repeat;
   }
 
   main {

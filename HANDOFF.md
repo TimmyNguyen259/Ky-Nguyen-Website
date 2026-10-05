@@ -86,9 +86,9 @@ Build sạch 11 trang. Đã sửa:
 - **Hiệu năng/code:** chỉ tải font latin (bỏ 2 file Vietnamese thừa), Tailwind không quét sinh class thừa, gom khoảng cách cột về token `--grid-gap` / `--triad-gap`, bỏ comment trong SVG mask, xoá dữ liệu/component chết (`SectionLabel`, `site.role`, `nextgen.line/eyebrow/readingTime`).
 
 Chưa làm (cố ý):
-- Nén `mesh.jpg` sang AVIF (−37 KB/trang) — sẽ làm mịn hạt grain của nền, cần Kỳ xem trước khi đổi.
+- ~~Nén mesh sang AVIF~~ — XONG 05/10: Kỳ chọn AVIF q80 (16 KB thay 44 KB, giữ grain). File giờ là `src/assets/brand/mesh.avif`.
 - Gom hiệu ứng gạch chân amber (thuần dọn code, rủi ro đổi hover).
-- Gỡ `@astrojs/markdown-satteri` khỏi package.json — cần chạy npm, để sau.
+- ~~Gỡ `@astrojs/markdown-satteri`~~ — XONG 05/10 (astro tự kéo theo), kèm `npm audit fix` → 0 vulnerabilities, dist giống hệt.
 - Reviewer "consistency" (thương hiệu giữa các trang) bị lỗi hết lượt, chưa chạy lại.
 
 Kỳ đã quyết (02/10, đã áp dụng):

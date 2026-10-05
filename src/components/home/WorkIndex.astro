@@ -32,7 +32,7 @@ const { rows } = Astro.props;
             {row.linkLabel}
             <span class="sr-only">: {row.title}</span>
           </span>
-          <span aria-hidden="true">→</span>
+          <span class="link__arrow" aria-hidden="true">→</span>
         </a>
       </div>
     </li>
@@ -48,6 +48,7 @@ const { rows } = Astro.props;
   }
 
   .work-index__row {
+    position: relative;
     display: grid;
     grid-template-columns: minmax(0, 1fr);
     gap: 1.25rem;
@@ -72,6 +73,23 @@ const { rows } = Astro.props;
 
   .work-index__link {
     margin-top: 0.5rem;
+  }
+
+  /* The whole row is the hit area, as on /cases; focus rings the row. */
+  .work-index__link::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+
+  .work-index__link:focus-visible {
+    outline: none;
+  }
+
+  .work-index__row:has(.work-index__link:focus-visible) {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 4px;
+    border-radius: 2px;
   }
 
   @media (min-width: 48rem) {

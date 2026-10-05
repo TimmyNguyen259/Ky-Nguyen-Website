@@ -47,7 +47,7 @@ const cvHref = site.cvPath && site.cvPath.length > 0 ? site.cvPath : null;
       />
       <ul class="believe" role="list">
         {philosophy.statements.map((statement) => (
-          <li class="lead">{statement}</li>
+          <li class="lead">{tieDashes(statement)}</li>
         ))}
       </ul>
     </div>

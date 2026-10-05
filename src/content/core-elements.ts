@@ -5,7 +5,7 @@
 
 // Book p. 11 — chapter opener.
 export const opening = {
-  label: 'Brand',
+  label: 'Core elements',
   title: 'Core Elements',
   body:
     'My identity assets and visual specifications, held inside a flexible editorial system that allows freedom without losing the thread.',
@@ -26,7 +26,7 @@ export const colours = {
   label: 'Colors',
   title: 'Colors',
   description:
-    'A pastel mesh gradient — cream, peach, lilac and soft blue flowing as one continuous surface — warmed by an amber accent, resting on a quiet base of grey and white.',
+    'A pastel mesh gradient — cream, peach, lilac and soft blue flowing as one continuous surface — warmed by an amber accent, resting on a quiet base of gray and white.',
   locked: [
     'The palette is locked.',
     'It feels the way the work should feel:',
@@ -40,7 +40,7 @@ export const colours = {
     { name: 'Soft Blue', descriptor: 'Clear', token: '--color-soft-blue', hex: '#C9DCED', on: 'ink' },
     { name: 'Amber', descriptor: 'Energy', token: '--color-amber', hex: '#DE7C4B', on: 'ink' },
     // Ink on grey is 3.3:1 — white carries the label at 5.1:1.
-    { name: 'Grey', descriptor: 'Quiet', token: '--color-grey', hex: '#6E6E73', on: 'white' },
+    { name: 'Gray', descriptor: 'Quiet', token: '--color-grey', hex: '#6E6E73', on: 'white' },
     { name: 'White', descriptor: 'Space', token: '--color-white', hex: '#FFFFFF', on: 'ink' },
   ] satisfies readonly Swatch[],
 } as const;
@@ -52,7 +52,7 @@ export const elements = [
     body: [
       'One clear sans voice, set with restraint.',
       'Large headlines with room to breathe.',
-      'Small, quiet grey labels.',
+      'Small, quiet gray labels.',
       'A balanced scale — composed like a magazine, never like a slide deck.',
     ],
   },

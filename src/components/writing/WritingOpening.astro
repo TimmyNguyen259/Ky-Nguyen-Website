@@ -5,6 +5,7 @@
 // right half, resting on a short amber rule — the book's diagonal read.
 import SectionHeading from '../SectionHeading.astro';
 import Rule from '../Rule.astro';
+import { tieDashes } from '../../utils/typography';
 
 type Props = {
   label: string;
@@ -22,7 +23,7 @@ const { label, title, intro, id = 'page-title' } = Astro.props;
       <SectionHeading as="h1" label={label} title={title} id={id} />
     </div>
     <div class="opening__aside">
-      <p class="lead quiet opening__intro">{intro}</p>
+      <p class="lead quiet opening__intro">{tieDashes(intro)}</p>
       <Rule tone="amber" class="opening__rule" />
     </div>
   </div>

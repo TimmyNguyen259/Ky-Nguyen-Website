@@ -38,7 +38,7 @@ const showReadingTime = readingTime && readingTime.trim() !== '—';
     {!muted && (
       <a href={href} class="link case-row__link">
         Read the case<span class="sr-only">: {title}</span>
-        <span class="case-row__arrow" aria-hidden="true">→</span>
+        <span class="link__arrow" aria-hidden="true">→</span>
       </a>
     )}
   </div>
@@ -105,16 +105,6 @@ const showReadingTime = readingTime && readingTime.trim() !== '—';
     outline: 2px solid var(--color-focus);
     outline-offset: 4px;
     border-radius: 2px;
-  }
-
-  .case-row__arrow {
-    display: inline-block;
-    transition: transform 180ms var(--ease);
-  }
-
-  .case-row__link:hover .case-row__arrow,
-  .case-row__link:focus-visible .case-row__arrow {
-    transform: translateX(3px);
   }
 
   .case-row--draft .case-row__title {

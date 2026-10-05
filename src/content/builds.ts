@@ -66,6 +66,6 @@ export const builds: readonly Build[] = [
     hrefKey: null,
     pain: 'When a repeat problem lives across three teams and no team owns it, every solution is temporary. Handoffs become the failure surface.',
     hypothesis: 'Decision rights, not org charts, are the artifact worth designing. When people know where a decision belongs, the process becomes a system.',
-    stack: ['Operating model design', 'RACI', 'Decision rights'],
+    stack: ['Operating-model design', 'RACI', 'Decision rights'],
   },
 ];

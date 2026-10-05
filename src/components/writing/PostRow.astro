@@ -3,6 +3,7 @@
 // bold title, then the grey tension line. The whole row is the hit area; the
 // title carries the link name. Drafts (dev only) are muted and not linked.
 import DraftBadge from './DraftBadge.astro';
+import { tieDashes } from '../../utils/typography';
 
 type Props = {
   href: string;
@@ -27,7 +28,7 @@ const { href, title, tension, readingTime, draft = false } = Astro.props;
       <a href={href} class="post-row__link"><span class="post-row__text">{title}</span></a>
     )}
   </h3>
-  <p class="post-row__tension quiet">{tension}</p>
+  <p class="post-row__tension quiet">{tieDashes(tension)}</p>
 </article>
 
 <style>

@@ -118,13 +118,14 @@ const currentFor = (href: string) =>
   }
 
   .site-header__link:hover,
-  .site-header__link:focus-visible,
-  .site-header__link[aria-current] {
+  .site-header__link:focus-visible {
     background-size: 100% 1px;
   }
 
+  /* Active page: bold amber text, no underline — as in the mobile nav. */
   .site-header__link[aria-current] {
     font-weight: 700;
+    color: var(--color-amber-text);
   }
 
   .site-header__cta {

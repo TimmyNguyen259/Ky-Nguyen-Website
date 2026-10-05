@@ -39,10 +39,14 @@ const Tag = as;
     line-height: 1;
     letter-spacing: 0.02em;
     color: var(--color-ink);
+  }
+
+  a.wordmark > span {
     transition: opacity 180ms var(--ease);
   }
 
-  a.wordmark:hover {
+  a.wordmark:hover > span,
+  a.wordmark:focus-visible > span {
     opacity: 0.62;
   }
 </style>

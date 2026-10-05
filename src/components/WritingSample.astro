@@ -5,7 +5,7 @@
 // page only supplies the body (and an optional writing-pattern note).
 import ArticleHeader from './writing/ArticleHeader.astro';
 import ArticleNav from './writing/ArticleNav.astro';
-import { getPost, publishedPosts } from '../content/thinking';
+import { getPost, pillars, publishedPosts } from '../content/thinking';
 import { tieDashes } from '../utils/typography';
 
 type Props = {
@@ -30,11 +30,13 @@ if (import.meta.env.PROD && post.status !== 'published') {
 const body = tieDashes(await Astro.slots.render('default'));
 const endsOnQuote = /<\/blockquote>\s*$/i.test(body);
 
-const index = publishedPosts.findIndex((entry) => entry.slug === slug);
+// Same order as the /thinking index: grouped by pillar.
+const ordered = pillars.flatMap((pillar) =>
+  publishedPosts.filter((entry) => entry.pillar === pillar.key),
+);
+const index = ordered.findIndex((entry) => entry.slug === slug);
 const nextPost =
-  index !== -1 && publishedPosts.length > 1
-    ? publishedPosts[(index + 1) % publishedPosts.length]
-    : undefined;
+  index !== -1 && ordered.length > 1 ? ordered[(index + 1) % ordered.length] : undefined;
 ---
 
 <div class="shell writing">
@@ -84,7 +86,7 @@ const nextPost =
 
   .writing__pattern-text {
     font-size: var(--text-small);
-    line-height: 1.5;
+    line-height: var(--leading-snug);
     color: var(--color-quiet);
   }
 

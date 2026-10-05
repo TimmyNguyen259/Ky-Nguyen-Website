@@ -176,13 +176,13 @@ const elsewhere = [
   @media (min-width: 48rem) {
     .site-footer__closing {
       grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-      gap: 4rem;
+      column-gap: var(--grid-gap);
       align-items: end;
     }
 
     .site-footer__grid {
       grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-      width: 50%;
+      width: calc(50% - var(--grid-gap) / 2);
       margin-left: auto;
     }
   }

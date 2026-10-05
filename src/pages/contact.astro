@@ -104,7 +104,7 @@ const signatureLines = contact.signature.split(/(?<=\.)\s+/);
     .contact {
       grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
       grid-template-rows: auto 1fr;
-      column-gap: 4rem;
+      column-gap: var(--grid-gap);
       /* Fill the first screen so the spread reads whole; the footer's own
          closing follows below the fold. */
       min-height: clamp(36rem, calc(90svh - var(--header-h)), 58rem);

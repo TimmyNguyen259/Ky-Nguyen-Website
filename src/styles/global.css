@@ -10,23 +10,9 @@
 @import "@fontsource/noto-sans/400.css";
 @import "@fontsource/noto-sans/700.css";
 
-@theme {
-  --color-cream: #FAF6F0;
-  --color-peach: #F4C7A4;
-  --color-lilac: #DACDEB;
-  --color-soft-blue: #C9DCED;
-  --color-amber: #DE7C4B;
-  --color-grey: #6E6E73;
-  --color-white: #FFFFFF;
-  --color-ink: #1D1D1F;
-  --color-blue: #5693BB;
-
-  --font-sans: "Noto Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
-}
-
 /*
- * Tokens live on :root as the source of truth. Tailwind v4 prunes @theme
- * tokens it cannot see used, and Astro scoped styles fall outside its scan.
+ * Tokens live on :root as the single source of truth. Tailwind is imported
+ * with source(none) for its preflight only, so no @theme copy is needed.
  */
 :root {
   color-scheme: light;
@@ -89,6 +75,7 @@
   --leading-heading: 1.1;
   --leading-lead: 1.45;
   --leading-body: 1.6;
+  --leading-snug: 1.5; /* short or narrow secondary copy */
 
   --tracking-heading: -0.012em;
   --tracking-label: 0.08em;
@@ -400,6 +387,16 @@
   .link:hover,
   .link:focus-visible {
     background-size: 100% 1px;
+  }
+
+  .link__arrow {
+    display: inline-block;
+    transition: transform 180ms var(--ease);
+  }
+
+  .link:hover .link__arrow,
+  .link:focus-visible .link__arrow {
+    transform: translateX(3px);
   }
 
   /* Long-form reading (Thinking posts, case narrative). */

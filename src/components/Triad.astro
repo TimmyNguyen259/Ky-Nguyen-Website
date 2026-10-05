@@ -3,6 +3,7 @@
 // Portrait). Columns always run amber · ink · blue: a coloured bold heading,
 // then its hairline in the same tone, then optional quiet copy.
 import Rule from './Rule.astro';
+import { tieDashes } from '../utils/typography';
 
 type Item = {
   title: string;
@@ -30,7 +31,7 @@ const Heading = headingLevel;
         <Rule tone={tone} class="triad__rule" />
         {lines.length > 0 && (
           <div class="triad__body quiet">
-            {lines.map((line) => <p>{line}</p>)}
+            {lines.map((line) => <p>{tieDashes(line)}</p>)}
           </div>
         )}
       </li>
@@ -72,7 +73,7 @@ const Heading = headingLevel;
     gap: 0.35rem;
     max-width: 24rem;
     font-size: var(--text-body);
-    line-height: 1.55;
+    line-height: var(--leading-snug);
   }
 
   @media (min-width: 52rem) {

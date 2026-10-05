@@ -39,7 +39,7 @@ const parts = title.split(/(\S+-\S+)/).filter(Boolean);
   .article-header {
     display: flex;
     flex-direction: column;
-    gap: clamp(1rem, 0.75rem + 1vw, 1.75rem);
+    gap: var(--heading-gap);
   }
 
   .article-header__meta {

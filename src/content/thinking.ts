@@ -29,6 +29,9 @@ export const pillars: readonly {
   },
 ];
 
+/** Drafts render muted in dev and never get a route. */
+type Status = 'published' | 'draft';
+
 export const posts = [
   {
     slug: 'ai-is-a-decision-design-problem',
@@ -39,7 +42,7 @@ export const posts = [
       'If no one can say which judgment should improve, another tool will only make the old process move faster.',
     readingTime: '1 min',
     date: '2026-09-21',
-    status: 'published' as const,
+    status: 'published' as Status,
   },
   {
     slug: 'a-separate-name',
@@ -49,7 +52,7 @@ export const posts = [
       'The safer name would have made recruitment easier, and kept a game-native program anchored to the wrong category.',
     readingTime: '1 min',
     date: '2026-09-21',
-    status: 'published' as const,
+    status: 'published' as Status,
   },
   {
     slug: 'process-is-not-a-system',
@@ -60,7 +63,7 @@ export const posts = [
       'A flowchart tells you what happens. It rarely tells you who owns the call when the flowchart is wrong.',
     readingTime: '2 min',
     date: '2026-10-05',
-    status: 'published' as const,
+    status: 'published' as Status,
   },
 ] as const;
 

@@ -162,9 +162,9 @@ portfolio/
 
 - Ảnh: chưa có ảnh Kỳ nào. Brandbook FINAL §The Portrait: "An illustrated character, built from my real face" — cần Kỳ cung cấp portrait illustration.
 - URLs trong `src/config/site.ts` trống: `email`, `cvPath`, `github`, `solaceUrl`, `voiceLabUrl`.
-- Cases: 2 case draft (`first-talents-five-markets`, `overseas-pipeline`) đã viết khung trong `src/content/cases.ts`, trang `/cases/[slug]` chỉ hiện ở dev. Còn các câu hỏi `[TODO_CONTENT: …]` chờ Kỳ trả lời.
+- Cases: **chỉ còn Nextgen** — Kỳ quyết (05/10) xoá 2 case draft (first talents / overseas pipeline) vì không hợp với site Kỳ muốn. Đừng gợi ý viết lại. Trang `/cases/[slug]` là template chung, thêm case mới = thêm 1 entry vào `caseIndex` + 1 story vào `caseStories`.
 - Thị trường (Kỳ xác nhận 05/10): **Thailand, Indonesia, China, Taiwan, Malaysia** — 5 thị trường, không phải "4 SEA markets" / Philippines.
-- Thinking: `process-is-not-a-system` status:draft chờ Kỳ viết content.
+- Thinking: `process-is-not-a-system` đã publish 05/10 (528 chữ, 2 min).
 - Builds: 3 builds có structure nhưng URL Solace/Voice-Lab/GitHub trống — link ẩn tự động.
 - Vercel URL: đã đổi sang `https://ky-nguyen-website.vercel.app` (05/10).
 
@@ -223,10 +223,10 @@ Trong Vercel dashboard → project → Settings → Domains → Add. Vercel sẽ
 ### Post-deploy TODO
 
 - [x] `public/og-default.jpg` — ảnh chia sẻ 1200×630 dạng JPEG (thay SVG cũ), chạy được cả trên LinkedIn.
-- [ ] **Illustrated portrait** — brandbook FINAL §The Portrait: "An illustrated character, built from my real face". Cần Kỳ commission portrait rồi mình chèn vào OG image + About page.
+- [ ] **Illustrated portrait** — brandbook FINAL §The Portrait: "An illustrated character, built from my real face". 05/10: đã đưa Kỳ brief để làm bằng Claude Design (canvas 1536×1024, figure x≈935–1345 / y≈60–985 để khớp mask hero hiện tại; + bản nền trong suốt, crop vuông 1024, OG 1200×630). Khi có file → thay `src/assets/brand/portrait-cover.jpg`, chỉnh mask nếu lệch.
 - [ ] Điền `email`, `cvPath` (upload PDF vào `public/`), `github`, `solaceUrl`, `voiceLabUrl` vào `src/config/site.ts` khi Kỳ có sẵn.
-- [ ] Viết nội dung cho `process-is-not-a-system` post (draft placeholder).
-- [ ] Duyệt narrative Belief/Decision/Outcome cho 2 case draft (SEA markets, overseas pipeline).
+- [x] Viết nội dung cho `process-is-not-a-system` post — publish 05/10.
+- [x] ~~2 case draft~~ — Kỳ quyết xoá (05/10).
 
 ---
 

@@ -89,7 +89,7 @@ Chưa làm (cố ý):
 - ~~Nén mesh sang AVIF~~ — XONG 05/10: Kỳ chọn AVIF q80 (16 KB thay 44 KB, giữ grain). File giờ là `src/assets/brand/mesh.avif`.
 - Gom hiệu ứng gạch chân amber (thuần dọn code, rủi ro đổi hover).
 - ~~Gỡ `@astrojs/markdown-satteri`~~ — XONG 05/10 (astro tự kéo theo), kèm `npm audit fix` → 0 vulnerabilities, dist giống hệt.
-- Reviewer "consistency" (thương hiệu giữa các trang) bị lỗi hết lượt, chưa chạy lại.
+- ~~Reviewer "consistency"~~ — XONG 05/10: 4 lens (copy, visual tokens, structure, rendered), 18 finding sống sót sau vòng phản biện, áp dụng 17 (commit `fdf5db1`). Bỏ qua: vị trí dấu phẩy quanh ngoặc kép (chưa có quy tắc). Nav desktop: trang đang mở = chữ amber đậm, không gạch chân.
 
 Kỳ đã quyết (02/10, đã áp dụng):
 1. Case Nextgen có title riêng: "VNGGames Nextgen · A separate name was not a branding preference".

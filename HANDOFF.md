@@ -57,7 +57,7 @@ Rules quan trọng:
 | Commitment Line | Vẫn có (Nextgen case dùng BELIEF → DECISION → OUTCOME). Palette đã restyled — amber dot + ink line + grey labels. |
 | LinkedIn URL | `https://www.linkedin.com/in/kynt259/` — đã set ở `src/config/site.ts` |
 | Email / CV / GitHub / Solace URL / Voice-Lab URL | **Chưa có** — đã để trống ở site.ts, sẽ hỏi user khi tới bước cần |
-| Vercel site URL | Placeholder `https://ky-nguyen.vercel.app` ở `astro.config.mjs` — **đổi sau khi deploy** |
+| Vercel site URL | **`https://ky-nguyen-website.vercel.app`** — đã set ở `astro.config.mjs` (`SITE_URL`) |
 | Ảnh | Spec cấm stock/AI-generated — dùng `TODO_IMAGE` marker cho đến khi có ảnh thật |
 | Language toggle | Không làm — site chỉ English |
 | Contact form | Không làm ở v1 (spec §10) — chỉ LinkedIn CTA |
@@ -71,7 +71,7 @@ Rules quan trọng:
 - [x] **Adversarial review** — workflow 4-lens parallel; 2 finders + 8 cleanup fixes áp dụng: theme-color palette fix, unused type import, dead deps (`@fontsource/noto-serif`, `@astrojs/mdx`), duplicate `site.statement`, dead `githubKey?` type, 3 unused CSS tokens, duplicate "A separate name" text trên home. 2 judgment calls đã apply theo brandbook: chrome dùng KN mark, drop amber underline dưới active nav.
 - [x] **Redesign theo brandbook** (23/09 chiều, sau lần handoff trước) — cover hero có portrait thật (`src/assets/brand/portrait-cover.jpg`) + mesh nền (`mesh.jpg`), thêm trang `/core-elements` và `404`, OG image đổi sang `public/og-default.jpg`. Cấu trúc component đã đổi (thư mục `home/`, `core/`, `writing/`, `builds/`) — danh sách file bên dưới là bản cũ, xem thẳng `src/` cho chính xác.
 - [x] **Duyệt cuối toàn site + sửa** (29/09 duyệt, 02/10 sửa) — xem mục "Session 02/10" bên dưới.
-- [ ] **Deploy** — commit + push + Vercel (checklist bên dưới).
+- [x] **Deploy** (05/10) — commit `d447e19` lên `main`, GitHub: https://github.com/TimmyNguyen259/Ky-Nguyen-Website, Vercel tự deploy mỗi lần push `main`. Live: https://ky-nguyen-website.vercel.app
 - [ ] **Post-deploy TODO** — xem cuối file.
 
 ---
@@ -165,13 +165,13 @@ portfolio/
 - Cases: 2 case draft (SEA markets, overseas pipeline) chờ Kỳ approve full narrative.
 - Thinking: `process-is-not-a-system` status:draft chờ Kỳ viết content.
 - Builds: 3 builds có structure nhưng URL Solace/Voice-Lab/GitHub trống — link ẩn tự động.
-- Vercel URL: `astro.config.mjs` dùng placeholder `https://ky-nguyen.vercel.app` — đổi sau khi deploy.
+- Vercel URL: đã đổi sang `https://ky-nguyen-website.vercel.app` (05/10).
 
 Manage server: `npx astro dev status | logs | stop`.
 
 ---
 
-## Phase 9 — Deploy checklist (đang chạy)
+## Phase 9 — Deploy checklist (XONG 05/10 — Bước 1–4 đã làm, Bước 5 khi có tên miền)
 
 ### Bước 1 — First commit (bạn chạy)
 
@@ -238,6 +238,8 @@ Trong Vercel dashboard → project → Settings → Domains → Add. Vercel sẽ
 
 ---
 
-**Cập nhật:** 02/10/2026 — sửa xong vòng duyệt cuối, 3 quyết định của Kỳ đã áp dụng — sẵn sàng commit + deploy.
+**Cập nhật:** 05/10/2026 — đã deploy lên Vercel, `SITE_URL` đã đổi sang URL thật. Git author: Ky Nguyen + GitHub noreply email (set riêng cho repo này).
+
+**Cập nhật trước:** 02/10/2026 — sửa xong vòng duyệt cuối, 3 quyết định của Kỳ đã áp dụng — sẵn sàng commit + deploy.
 
 **Ngày handoff gốc:** 23/09/2026 (brandbook FINAL migration complete: palette pastel mesh locked, one sans voice, tagline "Bring out the best in people.", chrome dùng KN mark theo brandbook. 8 cleanup fixes từ adversarial review đã apply. 9 pages prod build sạch. Chờ deploy.)

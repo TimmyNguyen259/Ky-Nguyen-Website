@@ -68,6 +68,9 @@ const personSchema = isHome
     {!noindex && <link rel="canonical" href={canonical} />}
 
     {noindex && <meta name="robots" content="noindex" />}
+    {site.googleSiteVerification && (
+      <meta name="google-site-verification" content={site.googleSiteVerification} />
+    )}
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" sizes="32x32" />
@@ -93,6 +96,17 @@ const personSchema = isHome
 
     {personSchema && (
       <script type="application/ld+json" set:html={JSON.stringify(personSchema)} />
+    )}
+
+    {/* Vercel Web Analytics — cookieless page views; production builds only,
+        since /_vercel/insights only exists on the deployed site. */}
+    {import.meta.env.PROD && (
+      <>
+        <script is:inline>
+          window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+        </script>
+        <script is:inline defer src="/_vercel/insights/script.js"></script>
+      </>
     )}
 
     <slot name="head" />

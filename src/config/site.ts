@@ -27,6 +27,9 @@ export const site = {
   solaceUrl: '',
   voiceLabUrl: '',
   ogImage: '/og-default.jpg',
+  // Google Search Console "HTML tag" code (the content="…" value only).
+  // Empty = no tag. Public by design: it only proves ownership.
+  googleSiteVerification: '',
   // Mesh cream — matches the surface under the header.
   themeColor: '#FAF6F0',
 } as const;

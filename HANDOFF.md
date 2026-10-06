@@ -223,6 +223,8 @@ Trong Vercel dashboard → project → Settings → Domains → Add. Vercel sẽ
 ### Post-deploy TODO
 
 - [x] `public/og-default.jpg` — ảnh chia sẻ 1200×630 dạng JPEG (thay SVG cũ), chạy được cả trên LinkedIn.
+- [x] **Vercel Web Analytics** (06/10) — bật trong dashboard, script inline trong `Base.astro` (chỉ build production), đã kiểm tra `/_vercel/insights/view` → 200. Không cookie.
+- [ ] **Google Search Console** — code sẵn: dán giá trị `content` của thẻ HTML tag vào `site.googleSiteVerification` (`src/config/site.ts`), push, rồi Kỳ bấm Verify (property kiểu URL prefix `https://ky-nguyen-website.vercel.app`) và submit `sitemap-index.xml`. Khi có tên miền riêng → thêm property mới.
 - [ ] **Illustrated portrait** — brandbook FINAL §The Portrait: "An illustrated character, built from my real face". 05/10: đã đưa Kỳ brief để làm bằng Claude Design (canvas 1536×1024, figure x≈935–1345 / y≈60–985 để khớp mask hero hiện tại; + bản nền trong suốt, crop vuông 1024, OG 1200×630). Khi có file → thay `src/assets/brand/portrait-cover.jpg`, chỉnh mask nếu lệch.
 - [ ] Điền `email`, `cvPath` (upload PDF vào `public/`), `github`, `solaceUrl`, `voiceLabUrl` vào `src/config/site.ts` khi Kỳ có sẵn.
 - [x] Viết nội dung cho `process-is-not-a-system` post — publish 05/10.

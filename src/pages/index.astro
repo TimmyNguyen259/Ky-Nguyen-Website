@@ -11,14 +11,15 @@ import Triad from '../components/Triad.astro';
 import { site, primaryCta } from '../config/site';
 import { statement, vision, mission, work } from '../content/home';
 import { caseIndex } from '../content/cases';
-import { publishedPosts } from '../content/thinking';
+import { getPublishedPosts } from '../content/thinking';
 import { buildsPage, builds } from '../content/builds';
 import { tieDashes } from '../utils/typography';
 
 // Only published work reaches the home page — drafts never surface here,
 // in development or in production.
 const firstCase = caseIndex.find((item) => item.status === 'published');
-const firstPost = publishedPosts[0];
+// The newest published post (getPublishedPosts is newest first).
+const [firstPost] = await getPublishedPosts();
 
 const rows: WorkRow[] = [];
 

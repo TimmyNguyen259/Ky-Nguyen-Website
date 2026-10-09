@@ -1,24 +1,21 @@
 ---
 // A Thinking post, composed like the book's Statement spread: label and big
 // title at the left margin, the reading column stepping in to the right.
-// Pillar, title and reading time come from src/content/thinking.ts — the
-// page only supplies the body (and an optional writing-pattern note).
+// Pillar, title, reading time and the optional writing-pattern note come
+// from the post's Markdown front matter (src/posts/*.md); the page supplies
+// the rendered body as the slot.
 import ArticleHeader from './writing/ArticleHeader.astro';
 import ArticleNav from './writing/ArticleNav.astro';
-import { getPost, pillars, publishedPosts } from '../content/thinking';
+import { getReadingOrder, type Post } from '../content/thinking';
 import { tieDashes } from '../utils/typography';
 
 type Props = {
-  slug: string;
-  pattern?: string;
+  post: Post;
 };
 
-const { slug, pattern } = Astro.props;
-const post = getPost(slug);
+const { post } = Astro.props;
+const { slug, pattern } = post;
 
-if (!post) {
-  throw new Error(`WritingSample: no post "${slug}" in src/content/thinking.ts`);
-}
 // Drafts never get a public route — fail the build instead of shipping one.
 if (import.meta.env.PROD && post.status !== 'published') {
   throw new Error(`WritingSample: "${slug}" is not published`);
@@ -31,9 +28,7 @@ const body = tieDashes(await Astro.slots.render('default'));
 const endsOnQuote = /<\/blockquote>\s*$/i.test(body);
 
 // Same order as the /thinking index: grouped by pillar.
-const ordered = pillars.flatMap((pillar) =>
-  publishedPosts.filter((entry) => entry.pillar === pillar.key),
-);
+const ordered = await getReadingOrder();
 const index = ordered.findIndex((entry) => entry.slug === slug);
 const nextPost =
   index !== -1 && ordered.length > 1 ? ordered[(index + 1) % ordered.length] : undefined;

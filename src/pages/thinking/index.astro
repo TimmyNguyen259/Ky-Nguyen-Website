@@ -2,10 +2,11 @@
 import Base from '../../layouts/Base.astro';
 import WritingOpening from '../../components/writing/WritingOpening.astro';
 import PostRow from '../../components/writing/PostRow.astro';
-import { pillars, posts } from '../../content/thinking';
+import { getPosts, pillars } from '../../content/thinking';
 import { tieDashes } from '../../utils/typography';
 
 const isProd = import.meta.env.PROD;
+const posts = await getPosts();
 
 // Drafts hide entirely in prod; they render muted in dev so the layout stays testable.
 const visiblePosts = posts.filter((post) => (isProd ? post.status === 'published' : true));

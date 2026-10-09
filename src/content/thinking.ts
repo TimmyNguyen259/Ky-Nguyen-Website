@@ -1,77 +1,68 @@
-// Thinking catalogue — the single source of truth for every post's pillar,
-// title, tension and reading time (the /thinking index, each post header and
-// the home Work index all read from here).
-// Voice: brandbook FINAL · Tone of Voice — direct, grounded, precise, at times blunt.
+// Thinking catalogue. Posts are Markdown files in src/posts/ (see
+// src/content.config.ts); this module turns them into the list every page
+// reads — the /thinking index, each post header and the home Work index.
+// Order: newest first (ties by slug), so a new post leads its pillar and
+// the home page.
+import { getCollection, type CollectionEntry } from 'astro:content';
+import { pillars, type Pillar } from './pillars';
 
-export type Pillar =
-  | 'People systems'
-  | 'Judgment calls'
-  | 'Building with AI';
+export { pillars, type Pillar };
 
-export const pillars: readonly {
-  key: Pillar;
-  blurb: string;
-}[] = [
-  {
-    key: 'People systems',
-    blurb:
-      'Decision rights, handoffs, operating models — and why a clean process can still be a bad system.',
-  },
-  {
-    key: 'Judgment calls',
-    blurb:
-      'What the room saw, what I saw, the decision and what the outcome changed.',
-  },
-  {
-    key: 'Building with AI',
-    blurb:
-      'Tools I build to make people work easier. Pain, hypothesis, artifact and what changed.',
-  },
-];
+export type Post = {
+  slug: string;
+  title: string;
+  /** <title> for the post page. */
+  pageTitle: string;
+  description: string;
+  pillar: Pillar;
+  tension: string;
+  date: Date;
+  status: 'published' | 'draft';
+  pattern?: string;
+  readingTime: string;
+  entry: CollectionEntry<'posts'>;
+};
 
-/** Drafts render muted in dev and never get a route. */
-type Status = 'published' | 'draft';
+const WORDS_PER_MINUTE = 250;
 
-export const posts = [
-  {
-    slug: 'ai-is-a-decision-design-problem',
-    pillar: 'People systems' as Pillar,
-    title:
-      'Most teams do not have an AI adoption problem. They have a decision-design problem.',
-    tension:
-      'If no one can say which judgment should improve, another tool will only make the old process move faster.',
-    readingTime: '1 min',
-    date: '2026-09-21',
-    status: 'published' as Status,
-  },
-  {
-    slug: 'a-separate-name',
-    pillar: 'Judgment calls' as Pillar,
-    title: 'A separate name was not a branding preference.',
-    tension:
-      'The safer name would have made recruitment easier, and kept a game-native program anchored to the wrong category.',
-    readingTime: '1 min',
-    date: '2026-09-21',
-    status: 'published' as Status,
-  },
-  {
-    slug: 'process-is-not-a-system',
-    pillar: 'People systems' as Pillar,
-    title:
-      'A process is not a system until people know where a decision belongs.',
-    tension:
-      'A flowchart tells you what happens. It rarely tells you who owns the call when the flowchart is wrong.',
-    readingTime: '2 min',
-    date: '2026-10-05',
-    status: 'published' as Status,
-  },
-] as const;
+/** "1 min", "2 min" … from the Markdown body's word count. */
+const readingTime = (body = ''): string => {
+  const words = body.split(/\s+/).filter((token) => /[\p{L}\p{N}]/u.test(token)).length;
+  return `${Math.max(1, Math.round(words / WORDS_PER_MINUTE))} min`;
+};
 
-export type Post = (typeof posts)[number];
+const toPost = (entry: CollectionEntry<'posts'>): Post => {
+  const { title, pageTitle, description, tension } = entry.data;
+  return {
+    slug: entry.id,
+    title,
+    pageTitle: pageTitle ?? title.replace(/\.$/, ''),
+    description: description ?? tension,
+    pillar: entry.data.pillar,
+    tension,
+    date: entry.data.date,
+    status: entry.data.status,
+    pattern: entry.data.pattern,
+    readingTime: readingTime(entry.body),
+    entry,
+  };
+};
 
-/** Look up one post by slug (post pages derive their header from this). */
-export const getPost = (slug: string): Post | undefined =>
-  posts.find((post) => post.slug === slug);
+/** Every post, drafts included (pages filter drafts out of production). */
+export async function getPosts(): Promise<Post[]> {
+  const entries = await getCollection('posts');
+  return entries
+    .map(toPost)
+    .sort((a, b) => b.date.getTime() - a.date.getTime() || a.slug.localeCompare(b.slug));
+}
 
-/** Posts that have a live page. Drafts never get a route. */
-export const publishedPosts = posts.filter((post) => post.status === 'published');
+/** Posts that have a live page. Drafts never get a route in production. */
+export async function getPublishedPosts(): Promise<Post[]> {
+  return (await getPosts()).filter((post) => post.status === 'published');
+}
+
+/** Published posts in the order /thinking shows them: grouped by pillar. */
+export async function getReadingOrder(): Promise<Post[]> {
+  const published = await getPublishedPosts();
+  return pillars.flatMap((pillar) => published.filter((post) => post.pillar === pillar.key));
+}

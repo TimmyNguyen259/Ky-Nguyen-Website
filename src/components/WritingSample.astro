@@ -1,9 +1,10 @@
 ---
 // A Thinking post, composed like the book's Statement spread: label and big
 // title at the left margin, the reading column stepping in to the right.
-// Pillar, title, reading time and the optional writing-pattern note come
-// from the post's Markdown front matter (src/posts/*.md); the page supplies
-// the rendered body as the slot.
+// Pillar, title and the optional writing-pattern note come from the post's
+// front matter (src/posts/*.md); reading time is computed from the body's
+// word count in src/content/thinking.ts. The page supplies the rendered body
+// as the slot.
 import ArticleHeader from './writing/ArticleHeader.astro';
 import ArticleNav from './writing/ArticleNav.astro';
 import { getReadingOrder, type Post } from '../content/thinking';

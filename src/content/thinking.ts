@@ -31,8 +31,24 @@ const readingTime = (body = ''): string => {
   return `${Math.max(1, Math.round(words / WORDS_PER_MINUTE))} min`;
 };
 
+// Sentences from _TEMPLATE.md's sample body — a published post still
+// containing one was copied without replacing the sample.
+const TEMPLATE_SAMPLE = [
+  'Start with the point. One paragraph per idea',
+  'Bold a short phrase',
+  'End on one short line, starting with',
+];
+
 const toPost = (entry: CollectionEntry<'posts'>): Post => {
   const { title, pageTitle, description, tension } = entry.data;
+  if (entry.data.status === 'published') {
+    const body = entry.body ?? '';
+    if (!body.trim() || TEMPLATE_SAMPLE.some((sample) => body.includes(sample))) {
+      throw new Error(
+        `${entry.filePath}: the text under the second "---" is empty or still the template's sample — write the post there, or set status: draft.`,
+      );
+    }
+  }
   return {
     slug: entry.id,
     title,

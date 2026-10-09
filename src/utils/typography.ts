@@ -1,4 +1,4 @@
-// Render-time typesetting. The copy in src/content stays verbatim (meta tags,
+// Render-time typesetting. The copy in src/content and src/posts stays verbatim (meta tags,
 // JSON-LD and verbatim checks read it); these only change how lines break.
 
 const WJ = String.fromCharCode(0x2060); // word joiner

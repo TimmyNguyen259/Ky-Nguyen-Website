@@ -96,6 +96,16 @@ Kỳ đã quyết (02/10, đã áp dụng):
 2. Chính tả **kiểu Mỹ** toàn site: recognized, behavior, "Colors" (kể cả nhãn trên trang /core-elements, dù brandbook in "Colours"). Viết copy mới cũng theo kiểu Mỹ.
 3. Meta description /about = câu Brand Platform ("This brand platform defines who I am in words…").
 
+## Session 09/10 — bài Thinking thành file Markdown (Kỳ tự viết được)
+
+- **Bài viết = file `src/posts/<slug>.md`** — tên file là URL (`/thinking/<slug>`). Phần đầu file (front matter): `title`, `pillar`, `tension`, `date`, `status` (bắt buộc); `pageTitle`, `description`, `pattern` (tuỳ chọn, để `""` = dùng mặc định). Thân bài là Markdown thường.
+- **Viết bài mới:** copy `src/posts/_TEMPLATE.md` — hướng dẫn đầy đủ nằm trong file đó (file bắt đầu bằng `_` hoặc `.` không bao giờ publish). Không còn file `.astro` cho từng bài; trang render qua `src/pages/thinking/[slug].astro`.
+- **Luật kiểm tra** ở `src/content.config.ts` (pillar lấy từ `src/content/pillars.ts`): sai tên dòng (`Status`), thiếu `status`, ngày kiểu 9/10/2026, ngoặc kép cong bao ngoài, tiêu đề không kết thúc bằng . ? !, tên file có dấu/khoảng trắng/thiếu `.md`, bài published còn chữ mẫu hoặc thân rỗng → build dừng với thông báo dễ hiểu, site live giữ nguyên. Đã test 14 tình huống, tất cả đúng.
+- **Thứ tự: mới nhất trước** (theo `date`). Trang chủ hiện bài mới nhất; trong /thinking, bài mới nhất đứng đầu mỗi pillar; "Next" theo thứ tự /thinking. Thời gian đọc tự tính (250 từ/phút).
+- **Ngoại lệ quy tắc branch:** Kỳ được upload bài thẳng lên `main` (qua github.com) — chỉ cho file trong `src/posts/`. Code vẫn theo quy tắc feature branch.
+- Lưu ý dev: pattern glob phải là `['*.md', '!_*.md']` — `'[!_]*.md'` làm watcher của `astro dev` bỏ qua mọi bài thật (picomatch không bật posix).
+- Danh sách file trong mục "State hiện tại" bên dưới đã cũ (vẫn ghi `pages/thinking/*.astro` và mảng posts trong `thinking.ts`) — xem thẳng `src/`.
+
 ## State hiện tại (bản 23/09 sáng — một phần đã lạc hậu)
 
 ### Files đã có (theo brandbook FINAL)

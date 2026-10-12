@@ -114,6 +114,12 @@ Kỳ đã quyết (02/10, đã áp dụng):
 - npm audit còn 2 cảnh báo moderate của `fflate` (phụ thuộc của satori, lỗi giải nén ZIP64) — chấp nhận: satori chỉ đọc file font của mình lúc build; "fix" duy nhất là hạ satori về bản cũ (breaking).
 - LinkedIn cache ảnh preview: link đã từng share → dùng LinkedIn Post Inspector để làm mới.
 
+## Session 12/10 (tiếp) — bài thứ 4: Building with AI
+
+- Publish `src/posts/building-the-tool-myself.md` — "Building the tool myself is how I test whether I understand the problem." (pillar Building with AI, ~490 chữ, 2 min). Viết qua workflow 3 bản nháp → biên tập → kiểm chứng; mọi dữ kiện lấy từ CV + trang Builds, không claim kết quả cho Solace (in progress). Kỳ duyệt "publish" 12/10.
+- Pillar "Building with AI" giờ đã hiện trên /thinking; trang chủ hiện bài này (mới nhất).
+- Câu hỏi còn mở (không chặn): vì sao Solace có browser extension — nếu Kỳ xác nhận lý do, có thể thêm 1 câu sau đoạn hypothesis.
+
 ## State hiện tại (bản 23/09 sáng — một phần đã lạc hậu)
 
 ### Files đã có (theo brandbook FINAL)

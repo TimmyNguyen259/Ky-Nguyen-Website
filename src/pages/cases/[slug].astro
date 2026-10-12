@@ -47,7 +47,13 @@ const sections = story.sections.map((section, index) => {
 });
 ---
 
-<Base type="article" title={story.pageTitle} description={story.description}>
+<Base
+  type="article"
+  title={story.pageTitle}
+  description={story.description}
+  ogImage={`/og/cases/${story.slug}.jpg`}
+  ogImageAlt={story.title}
+>
   <div class="shell case">
     <article class="case__article" aria-labelledby="article-title">
       <ArticleHeader meta={meta} title={story.title} id="article-title" />

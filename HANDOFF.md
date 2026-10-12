@@ -106,6 +106,14 @@ Kỳ đã quyết (02/10, đã áp dụng):
 - Lưu ý dev: pattern glob phải là `['*.md', '!_*.md']` — `'[!_]*.md'` làm watcher của `astro dev` bỏ qua mọi bài thật (picomatch không bật posix).
 - Danh sách file trong mục "State hiện tại" bên dưới đã cũ (vẫn ghi `pages/thinking/*.astro` và mảng posts trong `thinking.ts`) — xem thẳng `src/`.
 
+## Session 12/10 — ảnh chia sẻ LinkedIn riêng cho từng bài / case
+
+- Mỗi bài Thinking và mỗi case có ảnh share riêng 1200×630: `/og/thinking/<slug>.jpg`, `/og/cases/<slug>.jpg` — vẽ lúc build (`src/utils/og.ts`: satori dựng chữ Noto Sans thành path, sharp đặt lên mesh). Endpoint: `src/pages/og/[section]/[slug].jpg.ts`. Bài mới tự có ảnh, không cần làm gì.
+- Bố cục theo `og-default.jpg`: nhãn pillar/category trên trái, KN trên phải, tiêu đề lớn, vạch amber, KY NGUYEN dưới trái. Không có chân dung (để chữ to); trang khác vẫn dùng `og-default.jpg`.
+- `Base.astro` có prop `ogImageAlt` (mặc định: tên — tagline).
+- npm audit còn 2 cảnh báo moderate của `fflate` (phụ thuộc của satori, lỗi giải nén ZIP64) — chấp nhận: satori chỉ đọc file font của mình lúc build; "fix" duy nhất là hạ satori về bản cũ (breaking).
+- LinkedIn cache ảnh preview: link đã từng share → dùng LinkedIn Post Inspector để làm mới.
+
 ## State hiện tại (bản 23/09 sáng — một phần đã lạc hậu)
 
 ### Files đã có (theo brandbook FINAL)

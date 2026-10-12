@@ -8,6 +8,8 @@ type Props = {
   title?: string;
   description?: string;
   ogImage?: string;
+  /** Text alternative for the share image (default: name — tagline). */
+  ogImageAlt?: string;
   noindex?: boolean;
   /** 'article' for posts and the case; everything else is a website. */
   type?: 'website' | 'article';
@@ -28,6 +30,7 @@ const {
   title,
   description = site.description,
   ogImage = site.ogImage,
+  ogImageAlt = `${site.name} — ${site.tagline}`,
   noindex = false,
   type = 'website',
   underHeader = false,
@@ -85,14 +88,14 @@ const personSchema = isHome
     <meta property="og:image" content={ogImageAbsolute} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content={`${site.name} — ${site.tagline}`} />
+    <meta property="og:image:alt" content={ogImageAlt} />
     <meta property="og:locale" content="en_US" />
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={pageTitle} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImageAbsolute} />
-    <meta name="twitter:image:alt" content={`${site.name} — ${site.tagline}`} />
+    <meta name="twitter:image:alt" content={ogImageAlt} />
 
     {personSchema && (
       <script type="application/ld+json" set:html={JSON.stringify(personSchema)} />

@@ -19,7 +19,13 @@ const { post } = Astro.props;
 const { Content } = await render(post.entry);
 ---
 
-<Base type="article" title={post.pageTitle} description={post.description}>
+<Base
+  type="article"
+  title={post.pageTitle}
+  description={post.description}
+  ogImage={`/og/thinking/${post.slug}.jpg`}
+  ogImageAlt={post.title}
+>
   <WritingSample post={post}>
     <Content />
   </WritingSample>

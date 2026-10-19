@@ -29,7 +29,7 @@ export const site = {
   ogImage: '/og-default.jpg',
   // Google Search Console "HTML tag" code (the content="…" value only).
   // Empty = no tag. Public by design: it only proves ownership.
-  googleSiteVerification: '',
+  googleSiteVerification: 'vZCSdFIKldeS2dvt0ASaUHB_8zQcC1-yRwJuKy7SwGc',
   // Mesh cream — matches the surface under the header.
   themeColor: '#FAF6F0',
 } as const;

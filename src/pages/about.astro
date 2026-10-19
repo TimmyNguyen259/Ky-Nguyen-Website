@@ -11,6 +11,7 @@ import ValuesList from '../components/ValuesList.astro';
 import EvidenceRow from '../components/EvidenceRow.astro';
 import ChapterOpener from '../components/core/ChapterOpener.astro';
 import { site } from '../config/site';
+import portrait from '../assets/brand/portrait-about.jpg';
 import { keepRanges, tieDashes } from '../utils/typography';
 import {
   opening,
@@ -33,6 +34,8 @@ const cvHref = site.cvPath && site.cvPath.length > 0 ? site.cvPath : null;
     label={opening.label}
     title={opening.title}
     lines={opening.lines}
+    portrait={portrait}
+    portraitAlt={opening.portraitAlt}
   />
 
   {/* 2 · Philosophy — book p. 5; "I / Believe" is set at the chapter-opener size */}

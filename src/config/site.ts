@@ -23,7 +23,7 @@ export const site = {
   linkedin: 'https://www.linkedin.com/in/kynt259/',
   email: '',
   cvPath: '',
-  github: '',
+  github: 'https://github.com/TimmyNguyen259',
   solaceUrl: '',
   voiceLabUrl: '',
   ogImage: '/og-default.jpg',

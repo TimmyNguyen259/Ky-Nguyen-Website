@@ -11,6 +11,7 @@ export const opening = {
     'This brand platform defines who I am in words.',
     'It gives clarity to the people I work with, and a standard to the work itself.',
   ],
+  portraitAlt: 'Ky Nguyen, smiling, in glasses and a light blazer',
 } as const;
 
 // Book p. 5 — the first statement continues the title ("I Believe / that…"),

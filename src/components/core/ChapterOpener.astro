@@ -2,6 +2,10 @@
 // The book's chapter opener (pp. 2 and 11): a big bold two-word title
 // top-left, broken one word per line; quiet grey text stepping down in the
 // right half, closed by a short amber rule well below it. Carries the page h1.
+// An optional portrait sits under the title on the left, its edges dissolved
+// into the mesh surface.
+import { Picture } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
 import SectionHeading from '../SectionHeading.astro';
 import Rule from '../Rule.astro';
 
@@ -10,9 +14,11 @@ type Props = {
   title: string;
   lines: readonly string[];
   id?: string;
+  portrait?: ImageMetadata;
+  portraitAlt?: string;
 };
 
-const { label, title, lines, id = 'page-title' } = Astro.props;
+const { label, title, lines, id = 'page-title', portrait, portraitAlt = '' } = Astro.props;
 ---
 
 <section class="section chapter" aria-labelledby={id}>
@@ -29,6 +35,18 @@ const { label, title, lines, id = 'page-title' } = Astro.props;
       {lines.map((line) => <p class="lead quiet">{line}</p>)}
       <Rule tone="amber" class="chapter__rule" />
     </div>
+    {portrait && (
+      <div class="chapter__portrait">
+        <Picture
+          src={portrait}
+          alt={portraitAlt}
+          formats={['avif', 'webp']}
+          widths={[384, 576, 768]}
+          sizes="(min-width: 48rem) 24rem, 80vw"
+          class="chapter__portrait-img"
+        />
+      </div>
+    )}
   </div>
 </section>
 
@@ -55,6 +73,35 @@ const { label, title, lines, id = 'page-title' } = Astro.props;
     margin-top: clamp(1.5rem, 0.5rem + 3vw, 4rem);
   }
 
+  /*
+   * A 3:4 crop of the square photo, centred on the face; a soft oval fade
+   * takes its own backdrop (and the corner decoration) into the mesh, so
+   * the photo has no hard frame.
+   */
+  .chapter__portrait {
+    max-width: 24rem;
+  }
+
+  .chapter__portrait :global(picture) {
+    display: block;
+  }
+
+  /* The empty top padding is headroom: the fade happens above the hair, not on it. */
+  .chapter__portrait :global(.chapter__portrait-img) {
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 3 / 4;
+    padding-top: 18%;
+    object-fit: cover;
+    object-position: 50% 0;
+    mask-image:
+      linear-gradient(to bottom, transparent 13%, #000 20%, #000 72%, transparent 98%),
+      radial-gradient(ellipse 40% 60% at 50% 50%, #000 60%, transparent 100%);
+    mask-composite: intersect;
+  }
+
   @media (min-width: 48rem) {
     .chapter__grid {
       grid-template-columns: repeat(12, minmax(0, 1fr));
@@ -65,6 +112,11 @@ const { label, title, lines, id = 'page-title' } = Astro.props;
     .chapter__grid > :global(.chapter__heading) {
       grid-column: 1 / span 6;
       grid-row: 1;
+    }
+
+    .chapter__portrait {
+      grid-column: 1 / span 5;
+      grid-row: 2;
     }
 
     /* One word per line, as the book sets "Brand / Platform". */

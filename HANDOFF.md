@@ -120,6 +120,13 @@ Kỳ đã quyết (02/10, đã áp dụng):
 - Pillar "Building with AI" giờ đã hiện trên /thinking; trang chủ hiện bài này (mới nhất).
 - Câu hỏi còn mở (không chặn): vì sao Solace có browser extension — nếu Kỳ xác nhận lý do, có thể thêm 1 câu sau đoạn hypothesis.
 
+## Session 19/10 — Search Console, GitHub, ảnh trang About
+
+- **Google Search Console** xác minh xong (thẻ HTML, xem Post-deploy TODO) + đã nộp sitemap.
+- **GitHub:** `site.github` = `https://github.com/TimmyNguyen259` (trang cá nhân, không phải repo website — Kỳ chọn). Hiện ở footer và nút "View on GitHub" dưới Solace + Voice-Lab trên /builds. Khi Solace/Voice-Lab có repo riêng → cần tách link riêng cho từng build (hiện cả hai dùng chung `site.github`).
+- **Ảnh chụp thật ở trang About:** `src/assets/brand/portrait-about.jpg` (ảnh vuông 1024 Kỳ gửi), nằm dưới tiêu đề "Brand Platform". `ChapterOpener` có prop tuỳ chọn `portrait` / `portraitAlt` (trang /core-elements không dùng). Cắt 3:4, có khoảng trống phía trên (`padding-top`) để viền mờ không làm tóc bị xám; mask = dải dọc + oval ngang. Đây là **ảnh chụp**, không phải chân dung minh hoạ của brandbook — ảnh hero trang chủ vẫn giữ nguyên, TODO illustrated portrait vẫn mở.
+- Lưu ý dev: sửa CSS trong `.astro` mà trình duyệt vẫn hiện bản cũ → `npx astro dev stop` rồi chạy lại.
+
 ## State hiện tại (bản 23/09 sáng — một phần đã lạc hậu)
 
 ### Files đã có (theo brandbook FINAL)
@@ -250,7 +257,7 @@ Trong Vercel dashboard → project → Settings → Domains → Add. Vercel sẽ
 - [x] **Vercel Web Analytics** (06/10) — bật trong dashboard, script inline trong `Base.astro` (chỉ build production), đã kiểm tra `/_vercel/insights/view` → 200. Không cookie.
 - [x] **Google Search Console** (19/10) — property kiểu URL prefix `https://ky-nguyen-website.vercel.app`, xác minh bằng thẻ HTML (mã ở `site.googleSiteVerification`, commit `058023b` — **không xoá**, xoá là mất xác minh). Đã nộp `sitemap-index.xml`. Khi có tên miền riêng → thêm property mới + mã mới.
 - [ ] **Illustrated portrait** — brandbook FINAL §The Portrait: "An illustrated character, built from my real face". 05/10: đã đưa Kỳ brief để làm bằng Claude Design (canvas 1536×1024, figure x≈935–1345 / y≈60–985 để khớp mask hero hiện tại; + bản nền trong suốt, crop vuông 1024, OG 1200×630). Khi có file → thay `src/assets/brand/portrait-cover.jpg`, chỉnh mask nếu lệch.
-- [ ] Điền `email`, `cvPath` (upload PDF vào `public/`), `github`, `solaceUrl`, `voiceLabUrl` vào `src/config/site.ts` khi Kỳ có sẵn.
+- [ ] Điền `email`, `cvPath` (upload PDF vào `public/`), `solaceUrl`, `voiceLabUrl` vào `src/config/site.ts` khi Kỳ có sẵn. (`github` xong 19/10.)
 - [x] Viết nội dung cho `process-is-not-a-system` post — publish 05/10.
 - [x] ~~2 case draft~~ — Kỳ quyết xoá (05/10).
 
@@ -265,7 +272,7 @@ Trong Vercel dashboard → project → Settings → Domains → Add. Vercel sẽ
 
 ---
 
-**Cập nhật:** 19/10/2026 — Google Search Console đã xác minh + nộp sitemap.
+**Cập nhật:** 19/10/2026 — Google Search Console đã xác minh + nộp sitemap; link GitHub; ảnh chụp ở đầu trang About.
 
 **Cập nhật trước nữa:** 05/10/2026 — đã deploy lên Vercel, `SITE_URL` đã đổi sang URL thật. Git author: Ky Nguyen + GitHub noreply email (set riêng cho repo này).
 
